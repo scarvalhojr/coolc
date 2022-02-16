@@ -1,0 +1,7 @@
+class A {
+    a: Int;
+};
+
+class B {
+    b: Bool;
+};
