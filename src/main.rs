@@ -1,10 +1,10 @@
-use clap::{app_from_crate, arg, crate_description, crate_version};
+use clap::{arg, command, crate_description, crate_version};
 use coolc::parser::parse_program;
 use std::fs::read_to_string;
 use std::process::exit;
 
 fn main() {
-    let args = app_from_crate!()
+    let args = command!()
         .args(&[
             arg!(<SOURCE> "Cool source file"),
             arg!(-p --print "Print parse tree").long("print-parse-tree"),

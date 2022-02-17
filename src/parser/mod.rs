@@ -4,7 +4,7 @@ use crate::ptree::*;
 use nom::branch::alt;
 use nom::bytes::complete::{tag, tag_no_case, take_while1};
 use nom::character::complete::{
-    alphanumeric1, anychar, char, multispace0, multispace1,
+    alphanumeric1, anychar, char, digit1, multispace0, multispace1,
 };
 use nom::combinator::{map, opt, recognize, value};
 use nom::multi::{fold_many0, many0, many1};
@@ -90,8 +90,54 @@ fn type_id(input: &str) -> IResult<&str, TypeId> {
 }
 
 fn expression(input: &str) -> IResult<&str, Expression> {
-    // TODO
-    alt((string_literal, boolean_literal))(input)
+    let (input, operand1) = term(input)?;
+    let (input, operations) = many0(tuple((
+        delimited(multispace0, alt((char('+'), char('-'))), multispace0),
+        term,
+    )))(input)?;
+    Ok((input, build_arith_expr(operand1, operations)))
+}
+
+fn build_arith_expr(
+    first_operand: Expression,
+    operations: Vec<(char, Expression)>,
+) -> Expression {
+    operations
+        .into_iter()
+        .fold(first_operand, |acc, (operator, next_expr)| {
+            Expression::new_arith_expression(acc, operator, next_expr)
+        })
+}
+
+fn term(input: &str) -> IResult<&str, Expression> {
+    let (input, operand1) = factor(input)?;
+    let (input, operations) = many0(tuple((
+        delimited(multispace0, alt((char('*'), char('/'))), multispace0),
+        factor,
+    )))(input)?;
+    Ok((input, build_arith_expr(operand1, operations)))
+}
+
+fn factor(input: &str) -> IResult<&str, Expression> {
+    alt((
+        // TODO: lots more here...
+        parens_expression,
+        integer_literal,
+        string_literal,
+        boolean_literal,
+    ))(input)
+}
+
+fn parens_expression(input: &str) -> IResult<&str, Expression> {
+    delimited(
+        pair(tag("("), multispace0),
+        expression,
+        pair(multispace0, tag(")")),
+    )(input)
+}
+
+fn integer_literal(input: &str) -> IResult<&str, Expression> {
+    map(digit1, |parsed: &str| IntegerLiteral(parsed.to_string()))(input)
 }
 
 fn string_literal(input: &str) -> IResult<&str, Expression> {

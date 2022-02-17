@@ -165,6 +165,148 @@ fn test_bad_type_id() {
 }
 
 #[test]
+fn test_arithmetic_expression() {
+    [
+        (
+            "1+2",
+            Expression::new_arith_expression(
+                IntegerLiteral("1".to_string()),
+                '+',
+                IntegerLiteral("2".to_string()),
+            ),
+            "",
+        ),
+        (
+            "2-1;",
+            Expression::new_arith_expression(
+                IntegerLiteral("2".to_string()),
+                '-',
+                IntegerLiteral("1".to_string()),
+            ),
+            ";",
+        ),
+        (
+            "3\t * \n4\n;",
+            Expression::new_arith_expression(
+                IntegerLiteral("3".to_string()),
+                '*',
+                IntegerLiteral("4".to_string()),
+            ),
+            "\n;",
+        ),
+        (
+            "10\n\n/ \t5 ",
+            Expression::new_arith_expression(
+                IntegerLiteral("10".to_string()),
+                '/',
+                IntegerLiteral("5".to_string()),
+            ),
+            " ",
+        ),
+        (
+            "2 + 3 * 5",
+            Expression::new_arith_expression(
+                IntegerLiteral("2".to_string()),
+                '+',
+                Expression::new_arith_expression(
+                    IntegerLiteral("3".to_string()),
+                    '*',
+                    IntegerLiteral("5".to_string()),
+                ),
+            ),
+            "",
+        ),
+        (
+            "2 + 3 * 5 + 4 +",
+            Expression::new_arith_expression(
+                Expression::new_arith_expression(
+                    IntegerLiteral("2".to_string()),
+                    '+',
+                    Expression::new_arith_expression(
+                        IntegerLiteral("3".to_string()),
+                        '*',
+                        IntegerLiteral("5".to_string()),
+                    ),
+                ),
+                '+',
+                IntegerLiteral("4".to_string()),
+            ),
+            " +",
+        ),
+        (
+            "2 + 3 * 5 - 8 / 4 * - 1",
+            Expression::new_arith_expression(
+                Expression::new_arith_expression(
+                    IntegerLiteral("2".to_string()),
+                    '+',
+                    Expression::new_arith_expression(
+                        IntegerLiteral("3".to_string()),
+                        '*',
+                        IntegerLiteral("5".to_string()),
+                    ),
+                ),
+                '-',
+                Expression::new_arith_expression(
+                    IntegerLiteral("8".to_string()),
+                    '/',
+                    IntegerLiteral("4".to_string()),
+                ),
+            ),
+            " * - 1",
+        ),
+    ]
+    .iter()
+    .for_each(|(input, expr, rest)| {
+        assert!(matches!(
+            expression(input),
+            Ok((r, e)) if r == *rest && &e == expr,
+        ))
+    });
+}
+
+#[test]
+fn test_parens_expression() {
+    [
+        ("(0)", "0", ""),
+        ("( 1);", "1", ";"),
+        ("(\t 123 \n)\n", "123", "\n"),
+        ("((0))", "0", ""),
+        ("(\t(\n( 0\n )\t) );\n", "0", ";\n"),
+    ]
+    .iter()
+    .for_each(|(input, literal, rest)| {
+        assert!(matches!(
+            parens_expression(input),
+            Ok((r, IntegerLiteral(i))) if r == *rest && i == *literal,
+        ))
+    });
+
+    ["()", ")(", "(()"]
+        .iter()
+        .for_each(|input| assert!(integer_literal(input).is_err()));
+}
+
+#[test]
+fn test_integer_literal() {
+    [
+        ("0", "0", ""),
+        ("01;", "01", ";"),
+        ("9999999999 ", "9999999999", " "),
+    ]
+    .iter()
+    .for_each(|(input, literal, rest)| {
+        assert!(matches!(
+            integer_literal(input),
+            Ok((r, IntegerLiteral(i))) if r == *rest && i == *literal,
+        ))
+    });
+
+    [" 0", "+1", "-1", "a1"]
+        .iter()
+        .for_each(|input| assert!(integer_literal(input).is_err()));
+}
+
+#[test]
 fn test_string_literal() {
     [
         ("\"\"", "", ""),

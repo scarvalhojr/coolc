@@ -4,6 +4,7 @@
 mod printer;
 
 use self::printer::*;
+use Expression::*;
 use Feature::*;
 
 pub type ObjectId = String;
@@ -36,7 +37,8 @@ impl Class {
         super_class: Option<TypeId>,
         features: Vec<Feature>,
     ) -> Self {
-        let super_class_name = super_class.unwrap_or("Object".to_string());
+        let super_class_name =
+            super_class.unwrap_or_else(|| "Object".to_string());
         Self {
             name,
             super_class_name,
@@ -66,6 +68,29 @@ impl Feature {
 
 #[derive(Debug, PartialEq)]
 pub enum Expression {
+    Addition(Box<Expression>, Box<Expression>),
+    Subtraction(Box<Expression>, Box<Expression>),
+    Multiplication(Box<Expression>, Box<Expression>),
+    Division(Box<Expression>, Box<Expression>),
+    IntegerLiteral(String),
     StringLiteral(String),
     BooleanLiteral(String),
+}
+
+impl Expression {
+    pub fn new_arith_expression(
+        operand1: Expression,
+        operator: char,
+        operand2: Expression,
+    ) -> Expression {
+        let expr1 = Box::new(operand1);
+        let expr2 = Box::new(operand2);
+        match operator {
+            '+' => Addition(expr1, expr2),
+            '-' => Subtraction(expr1, expr2),
+            '*' => Multiplication(expr1, expr2),
+            '/' => Division(expr1, expr2),
+            _ => panic!("Unknown operator"),
+        }
+    }
 }
