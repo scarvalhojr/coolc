@@ -1,0 +1,19 @@
+#name "examples/valid/simple.cool"
+#1 CLASS
+#1 TYPEID A
+#1 '{'
+#2 OBJECTID a
+#2 ':'
+#2 TYPEID Int
+#2 ';'
+#3 '}'
+#3 ';'
+#5 CLASS
+#5 TYPEID B
+#5 '{'
+#6 OBJECTID b
+#6 ':'
+#6 TYPEID Bool
+#6 ';'
+#7 '}'
+#7 ';'

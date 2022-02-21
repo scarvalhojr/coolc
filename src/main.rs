@@ -1,13 +1,17 @@
 use clap::{arg, command, crate_description, crate_version};
+use coolc::lexer::lex_tokens;
 use coolc::parser::parse_program;
 use std::fs::read_to_string;
 use std::process::exit;
 
 fn main() {
     let args = command!()
+        .arg_required_else_help(true)
         .args(&[
             arg!(<SOURCE> "Cool source file"),
-            arg!(-p --print "Print parse tree").long("print-parse-tree"),
+            arg!(-l --lex "Run lexer only, print tokens and stop")
+                .conflicts_with("parse"),
+            arg!(-p --parse "Run lexer and parser, print parse tree and stop"),
         ])
         .get_matches();
 
@@ -22,15 +26,34 @@ fn main() {
         }
     };
 
-    let parse_tree = match parse_program(&source) {
-        Ok((_unparsed, tree)) => tree,
-        Err(_unparsed) => {
-            eprintln!("Program failed to compile.");
-            exit(1);
+    let tokens = match lex_tokens(&source) {
+        Ok((_, tok)) => tok,
+        Err(err) => {
+            eprintln!("Scanner error: {err}.");
+            exit(2);
         }
     };
 
-    if args.is_present("print") {
+    if args.is_present("lex") {
+        // Print tokens...
+        println!("#name \"{}\"", filename);
+        for token in tokens.iter() {
+            println!("{token}");
+        }
+        // ... and stop
+        exit(0);
+    }
+
+    let parse_tree = match parse_program(&source) {
+        Ok((_unparsed, tree)) => tree,
+        Err(err) => {
+            eprintln!("Parser error: {err}.");
+            exit(3);
+        }
+    };
+
+    if args.is_present("parse") {
+        // Print parse tree
         println!("{}", parse_tree.print(filename));
     } else {
         eprintln!("Program compiled successfully.");
