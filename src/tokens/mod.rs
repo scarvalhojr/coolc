@@ -4,14 +4,13 @@
 
 use core::slice::Iter;
 use nom::{InputIter, InputLength, InputTake, Needed, Slice};
+use nom_locate::LocatedSpan;
 use std::fmt::{Display, Formatter};
 use std::iter::Enumerate;
 use std::ops::{Range, RangeFrom, RangeFull, RangeTo};
 
-// TODO: add line number to tokens
-
 #[derive(Debug, Clone, PartialEq)]
-pub enum Token {
+pub enum TokenKind {
     // Reserved words
     Class,
     Inherits,
@@ -62,9 +61,31 @@ pub enum Token {
     Ident(String),
 }
 
+pub type Span<'a> = LocatedSpan<&'a str, &'a str>;
+
+#[derive(Clone, PartialEq)]
+pub struct Token<'a> {
+    pub kind: TokenKind,
+    pub position: Span<'a>,
+}
+
+impl<'a> Token<'a> {
+    pub fn new(kind: TokenKind, position: Span<'a>) -> Self {
+        Self { kind, position }
+    }
+}
+
 // The format used here mimics the output of the reference lexer implementation
 // used in the Compilers course.
-impl Display for Token {
+impl Display for Token<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let line_num = self.position.location_line();
+        let token = &self.kind;
+        write!(f, "#{line_num} {token}")
+    }
+}
+
+impl Display for TokenKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let escape = |s: &str| {
             s.chars().fold(String::new(), |mut string, ch| {
@@ -80,13 +101,12 @@ impl Display for Token {
             })
         };
 
-        let line_num = 1;
         let output = match self {
-            Self::IntLiteral(value) => format!("INT_CONST {value}"),
-            Self::StrLiteral(value) => {
-                format!("STR_CONST \"{}\"", escape(value))
+            Self::IntLiteral(integer) => format!("INT_CONST {integer}"),
+            Self::StrLiteral(string) => {
+                format!("STR_CONST \"{}\"", escape(string))
             }
-            Self::BoolLiteral(value) => format!("BOOL_CONST {value}"),
+            Self::BoolLiteral(kind) => format!("BOOL_CONST {kind}"),
             Self::TypeId(id) => format!("TYPEID {id}"),
             Self::Ident(id) => format!("OBJECTID {id}"),
             other => match other {
@@ -130,12 +150,12 @@ impl Display for Token {
             }
             .to_string(),
         };
-        write!(f, "#{line_num} {output}")
+        write!(f, "{output}")
     }
 }
-// #[derive(Clone, Copy, PartialEq, Debug)]
+
 pub struct Tokens<'a> {
-    pub tokens: &'a [Token],
+    pub tokens: &'a [Token<'a>],
     pub start: usize,
     pub end: usize,
 }
@@ -181,13 +201,6 @@ impl<'a> InputTake for Tokens<'a> {
     }
 }
 
-impl InputLength for Token {
-    #[inline]
-    fn input_len(&self) -> usize {
-        1
-    }
-}
-
 impl<'a> Slice<Range<usize>> for Tokens<'a> {
     fn slice(&self, range: Range<usize>) -> Self {
         Tokens {
@@ -221,15 +234,15 @@ impl<'a> Slice<RangeFull> for Tokens<'a> {
 }
 
 impl<'a> InputIter for Tokens<'a> {
-    type Item = &'a Token;
-    type Iter = Enumerate<Iter<'a, Token>>;
-    type IterElem = Iter<'a, Token>;
+    type Item = &'a Token<'a>;
+    type Iter = Enumerate<Iter<'a, Token<'a>>>;
+    type IterElem = Iter<'a, Token<'a>>;
 
-    fn iter_indices(&self) -> Enumerate<Iter<'a, Token>> {
+    fn iter_indices(&self) -> Enumerate<Iter<'a, Token<'a>>> {
         self.tokens.iter().enumerate()
     }
 
-    fn iter_elements(&self) -> Iter<'a, Token> {
+    fn iter_elements(&self) -> Iter<'a, Token<'a>> {
         self.tokens.iter()
     }
 

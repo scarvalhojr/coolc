@@ -1,7 +1,7 @@
 //! The lexer functions read Cool source code as a string and produce a series
 //! of tokens.
 
-use crate::tokens::Token;
+use crate::tokens::{Span, Token, TokenKind};
 use nom::branch::alt;
 use nom::bytes::complete::{is_not, tag, take_while1};
 use nom::character::complete::{
@@ -11,6 +11,7 @@ use nom::combinator::{eof, map, map_res, peek, recognize, value, verify};
 use nom::multi::{fold_many0, many0};
 use nom::sequence::{delimited, pair, preceded, terminated};
 use nom::IResult;
+use nom_locate::position;
 use std::str::FromStr;
 
 #[cfg(test)]
@@ -18,22 +19,22 @@ mod tests;
 
 // TODO: handle errors
 
-pub fn lex_tokens(input: &str) -> IResult<&str, Vec<Token>> {
+pub fn lex_tokens(input: Span) -> IResult<Span, Vec<Token>> {
     terminated(
         many0(preceded(many0(discarded), token)),
         preceded(many0(discarded), eof),
     )(input)
 }
 
-fn discarded(input: &str) -> IResult<&str, ()> {
+fn discarded(input: Span) -> IResult<Span, ()> {
     alt((value((), multispace1), line_comment, block_comment))(input)
 }
 
-fn line_comment(input: &str) -> IResult<&str, ()> {
+fn line_comment(input: Span) -> IResult<Span, ()> {
     value((), preceded(tag("--"), not_line_ending))(input)
 }
 
-fn block_comment(input: &str) -> IResult<&str, ()> {
+fn block_comment(input: Span) -> IResult<Span, ()> {
     delimited(
         tag("(*"),
         value((), many0(alt((block_comment, block_comment_contents)))),
@@ -41,7 +42,7 @@ fn block_comment(input: &str) -> IResult<&str, ()> {
     )(input)
 }
 
-fn block_comment_contents(input: &str) -> IResult<&str, ()> {
+fn block_comment_contents(input: Span) -> IResult<Span, ()> {
     alt((
         value((), preceded(char('('), peek(none_of("*")))),
         value((), preceded(char('*'), peek(none_of(")")))),
@@ -49,7 +50,7 @@ fn block_comment_contents(input: &str) -> IResult<&str, ()> {
     ))(input)
 }
 
-fn token(input: &str) -> IResult<&str, Token> {
+fn token(input: Span) -> IResult<Span, Token> {
     alt((
         reserved_word,
         symbol,
@@ -61,97 +62,110 @@ fn token(input: &str) -> IResult<&str, Token> {
     ))(input)
 }
 
-fn reserved_word(input: &str) -> IResult<&str, Token> {
-    map_res(
-        // Capture the longest sequence of alphanumeric characters and
-        // '_' to make sure we don't confuse the prefix of a valid identifier
-        // or type with a reserved word. For instance, "class1" and "If2" should
-        // not be confused with reserved words.
-        recognize(many0(alt((alphanumeric1, tag("_"))))),
-        |s: &str| match s.to_lowercase().as_str() {
-            "class" => Ok(Token::Class),
-            "inherits" => Ok(Token::Inherits),
-            "if" => Ok(Token::If),
-            "then" => Ok(Token::Then),
-            "else" => Ok(Token::Else),
-            "fi" => Ok(Token::Fi),
-            "let" => Ok(Token::Let),
-            "in" => Ok(Token::In),
-            "while" => Ok(Token::While),
-            "loop" => Ok(Token::Loop),
-            "pool" => Ok(Token::Pool),
-            "case" => Ok(Token::Case),
-            "of" => Ok(Token::Of),
-            "esac" => Ok(Token::Esac),
-            "new" => Ok(Token::New),
-            "isvoid" => Ok(Token::IsVoid),
-            "not" => Ok(Token::Not),
-            _ => Err(()),
-        },
+fn reserved_word(input: Span) -> IResult<Span, Token> {
+    let (_, pos) = position(input)?;
+    map(
+        map_res(
+            // Capture the longest sequence of alphanumeric characters and
+            // '_' to make sure we don't confuse the prefix of a valid identifier
+            // or type with a reserved word. For instance, "class1" and "If2" should
+            // not be confused with reserved words.
+            recognize(many0(alt((alphanumeric1, tag("_"))))),
+            |s: Span| match s.to_lowercase().as_str() {
+                "class" => Ok(TokenKind::Class),
+                "inherits" => Ok(TokenKind::Inherits),
+                "if" => Ok(TokenKind::If),
+                "then" => Ok(TokenKind::Then),
+                "else" => Ok(TokenKind::Else),
+                "fi" => Ok(TokenKind::Fi),
+                "let" => Ok(TokenKind::Let),
+                "in" => Ok(TokenKind::In),
+                "while" => Ok(TokenKind::While),
+                "loop" => Ok(TokenKind::Loop),
+                "pool" => Ok(TokenKind::Pool),
+                "case" => Ok(TokenKind::Case),
+                "of" => Ok(TokenKind::Of),
+                "esac" => Ok(TokenKind::Esac),
+                "new" => Ok(TokenKind::New),
+                "isvoid" => Ok(TokenKind::IsVoid),
+                "not" => Ok(TokenKind::Not),
+                _ => Err(()),
+            },
+        ),
+        move |kind| Token::new(kind, pos),
     )(input)
 }
 
-fn symbol(input: &str) -> IResult<&str, Token> {
-    alt((
-        value(Token::At, tag("@")),
-        value(Token::Assign, tag("<-")),
-        value(Token::DoubleArrow, tag("=>")),
-        value(Token::OpenBraces, tag("{")),
-        value(Token::CloseBraces, tag("}")),
-        value(Token::OpenParens, tag("(")),
-        value(Token::CloseParens, tag(")")),
-        value(Token::Dot, tag(".")),
-        value(Token::Comma, tag(",")),
-        value(Token::Colon, tag(":")),
-        value(Token::SemiColon, tag(";")),
-        value(Token::Equals, tag("=")),
-        value(Token::Plus, tag("+")),
-        value(Token::Minus, tag("-")),
-        value(Token::Multiply, tag("*")),
-        value(Token::Divide, tag("/")),
-        value(Token::Negative, tag("~")),
-        value(Token::LessThanOrEquals, tag("<=")),
-        value(Token::LessThan, tag("<")),
-    ))(input)
+fn symbol(input: Span) -> IResult<Span, Token> {
+    let (_, pos) = position(input)?;
+    map(
+        alt((
+            value(TokenKind::At, tag("@")),
+            value(TokenKind::Assign, tag("<-")),
+            value(TokenKind::DoubleArrow, tag("=>")),
+            value(TokenKind::OpenBraces, tag("{")),
+            value(TokenKind::CloseBraces, tag("}")),
+            value(TokenKind::OpenParens, tag("(")),
+            value(TokenKind::CloseParens, tag(")")),
+            value(TokenKind::Dot, tag(".")),
+            value(TokenKind::Comma, tag(",")),
+            value(TokenKind::Colon, tag(":")),
+            value(TokenKind::SemiColon, tag(";")),
+            value(TokenKind::Equals, tag("=")),
+            value(TokenKind::Plus, tag("+")),
+            value(TokenKind::Minus, tag("-")),
+            value(TokenKind::Multiply, tag("*")),
+            value(TokenKind::Divide, tag("/")),
+            value(TokenKind::Negative, tag("~")),
+            value(TokenKind::LessThanOrEquals, tag("<=")),
+            value(TokenKind::LessThan, tag("<")),
+        )),
+        move |kind| Token::new(kind, pos),
+    )(input)
 }
 
-fn int_literal(input: &str) -> IResult<&str, Token> {
-    map(map_res(digit1, FromStr::from_str), Token::IntLiteral)(input)
+fn int_literal(input: Span) -> IResult<Span, Token> {
+    let (_, pos) = position(input)?;
+    map(
+        map_res(digit1, |s: Span| i32::from_str(&s)),
+        move |integer| Token::new(TokenKind::IntLiteral(integer), pos),
+    )(input)
 }
 
-fn str_literal(input: &str) -> IResult<&str, Token> {
+fn str_literal(input: Span) -> IResult<Span, Token> {
     let build_string =
         fold_many0(str_fragment, String::new, |mut string, fragment| {
             match fragment {
-                StrFragment::UnescapedFragment(s) => string.push_str(s),
+                StrFragment::UnescapedFragment(s) => string.push_str(&s),
                 StrFragment::EscapedChar(c) => string.push(c),
             }
             string
         });
 
+    let (_, pos) = position(input)?;
     map(
         delimited(char('"'), build_string, char('"')),
-        Token::StrLiteral,
+        move |string| Token::new(TokenKind::StrLiteral(string), pos),
     )(input)
 }
 
 enum StrFragment<'a> {
-    UnescapedFragment(&'a str),
+    UnescapedFragment(Span<'a>),
     EscapedChar(char),
 }
 
-fn str_fragment(input: &str) -> IResult<&str, StrFragment> {
+fn str_fragment(input: Span) -> IResult<Span, StrFragment> {
     alt((
         map(unescaped_fragment, StrFragment::UnescapedFragment),
         map(escaped_char, StrFragment::EscapedChar),
     ))(input)
 }
 
-fn unescaped_fragment(input: &str) -> IResult<&str, &str> {
+fn unescaped_fragment(input: Span) -> IResult<Span, Span> {
     take_while1(|c: char| c != '\\' && c != '"')(input)
 }
 
-fn escaped_char(input: &str) -> IResult<&str, char> {
+fn escaped_char(input: Span) -> IResult<Span, char> {
     preceded(
         char('\\'),
         alt((
@@ -165,52 +179,56 @@ fn escaped_char(input: &str) -> IResult<&str, char> {
     )(input)
 }
 
-fn bool_literal(input: &str) -> IResult<&str, Token> {
+fn bool_literal(input: Span) -> IResult<Span, Token> {
     alt((false_literal, true_literal))(input)
 }
 
-fn false_literal(input: &str) -> IResult<&str, Token> {
+fn false_literal(input: Span) -> IResult<Span, Token> {
+    let (_, pos) = position(input)?;
     value(
-        Token::BoolLiteral(false),
+        Token::new(TokenKind::BoolLiteral(false), pos),
         pair(
             char('f'),
             verify(
                 recognize(many0(alt((alphanumeric1, tag("_"))))),
-                |s: &str| s.to_lowercase() == "alse",
+                |s: &Span| s.to_lowercase() == "alse",
             ),
         ),
     )(input)
 }
 
-fn true_literal(input: &str) -> IResult<&str, Token> {
+fn true_literal(input: Span) -> IResult<Span, Token> {
+    let (_, pos) = position(input)?;
     value(
-        Token::BoolLiteral(true),
+        Token::new(TokenKind::BoolLiteral(true), pos),
         pair(
             char('t'),
             verify(
                 recognize(many0(alt((alphanumeric1, tag("_"))))),
-                |s: &str| s.to_lowercase() == "rue",
+                |s: &Span| s.to_lowercase() == "rue",
             ),
         ),
     )(input)
 }
 
-fn type_id(input: &str) -> IResult<&str, Token> {
+fn type_id(input: Span) -> IResult<Span, Token> {
+    let (_, pos) = position(input)?;
     map(
         recognize(pair(
             take_while1(|c: char| c.is_uppercase()),
             many0(alt((alphanumeric1, tag("_")))),
         )),
-        |s: &str| Token::TypeId(s.to_string()),
+        move |s: Span| Token::new(TokenKind::TypeId(s.to_string()), pos),
     )(input)
 }
 
-fn ident(input: &str) -> IResult<&str, Token> {
+fn ident(input: Span) -> IResult<Span, Token> {
+    let (_, pos) = position(input)?;
     map(
         recognize(pair(
             take_while1(|c: char| c.is_lowercase()),
             many0(alt((alphanumeric1, tag("_")))),
         )),
-        |s: &str| Token::Ident(s.to_string()),
+        move |s: Span| Token::new(TokenKind::Ident(s.to_string()), pos),
     )(input)
 }

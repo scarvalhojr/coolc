@@ -1,6 +1,7 @@
 use clap::{arg, command, crate_description, crate_version};
 use coolc::lexer::lex_tokens;
 use coolc::parser::parse_program;
+use coolc::tokens::Span;
 use std::fs::read_to_string;
 use std::process::exit;
 
@@ -26,7 +27,7 @@ fn main() {
         }
     };
 
-    let tokens = match lex_tokens(&source) {
+    let tokens = match lex_tokens(Span::new_extra(&source, filename)) {
         Ok((_, tok)) => tok,
         Err(err) => {
             eprintln!("Scanner error: {err}.");

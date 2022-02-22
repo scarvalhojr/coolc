@@ -1,5 +1,9 @@
 use super::*;
 
+fn span(input: &str) -> Span {
+    Span::new_extra(input, "")
+}
+
 #[test]
 fn test_lex_tokens() {
     [
@@ -17,8 +21,8 @@ fn test_lex_tokens() {
     .iter()
     .for_each(|(input, count)| {
         assert!(matches!(
-            lex_tokens(input),
-            Ok((rest, tokens)) if rest.is_empty() && tokens.len() == *count,
+            lex_tokens(span(input)),
+            Ok((r, t)) if r.to_string().is_empty() && t.len() == *count,
         ))
     })
 }
@@ -34,8 +38,8 @@ fn test_line_comment() {
     .iter()
     .for_each(|(input, rest)| {
         assert!(matches!(
-            line_comment(input),
-            Ok((r, ())) if r == *rest,
+            line_comment(span(input)),
+            Ok((r, ())) if r.to_string() == *rest,
         ))
     })
 }
@@ -56,8 +60,8 @@ fn test_block_comment() {
     .iter()
     .for_each(|(input, rest)| {
         assert!(matches!(
-            block_comment(input),
-            Ok((r, ())) if r == *rest,
+            block_comment(span(input)),
+            Ok((r, ())) if r.to_string() == *rest,
         ))
     })
 }
@@ -65,29 +69,29 @@ fn test_block_comment() {
 #[test]
 fn test_reserved_word() {
     [
-        ("CLASS A", Token::Class, " A"),
-        ("inherits B", Token::Inherits, " B"),
-        ("iF t", Token::If, " t"),
-        ("Then {", Token::Then, " {"),
-        ("eLsE 1", Token::Else, " 1"),
-        ("FI;", Token::Fi, ";"),
-        ("let a", Token::Let, " a"),
-        ("In {", Token::In, " {"),
-        ("WHILE t", Token::While, " t"),
-        ("loop {", Token::Loop, " {"),
-        ("Pool;", Token::Pool, ";"),
-        ("cAse a:", Token::Case, " a:"),
-        ("OF x", Token::Of, " x"),
-        ("eSAc;", Token::Esac, ";"),
-        ("NEW o", Token::New, " o"),
-        ("IsVoid x", Token::IsVoid, " x"),
-        ("not f", Token::Not, " f"),
+        ("CLASS A", TokenKind::Class, " A"),
+        ("inherits B", TokenKind::Inherits, " B"),
+        ("iF t", TokenKind::If, " t"),
+        ("Then {", TokenKind::Then, " {"),
+        ("eLsE 1", TokenKind::Else, " 1"),
+        ("FI;", TokenKind::Fi, ";"),
+        ("let a", TokenKind::Let, " a"),
+        ("In {", TokenKind::In, " {"),
+        ("WHILE t", TokenKind::While, " t"),
+        ("loop {", TokenKind::Loop, " {"),
+        ("Pool;", TokenKind::Pool, ";"),
+        ("cAse a:", TokenKind::Case, " a:"),
+        ("OF x", TokenKind::Of, " x"),
+        ("eSAc;", TokenKind::Esac, ";"),
+        ("NEW o", TokenKind::New, " o"),
+        ("IsVoid x", TokenKind::IsVoid, " x"),
+        ("not f", TokenKind::Not, " f"),
     ]
     .iter()
-    .for_each(|(input, token, rest)| {
+    .for_each(|(input, token_kind, rest)| {
         assert!(matches!(
-            reserved_word(input),
-            Ok((r, t)) if r == *rest && t == *token,
+            reserved_word(span(input)),
+            Ok((r, t)) if r.to_string() == *rest && t.kind == *token_kind,
         ))
     })
 }
@@ -98,37 +102,37 @@ fn test_bad_reserved_word() {
         "classe", "inh", "if1", "the", "else_", "fii", "is_void", "not_",
     ]
     .iter()
-    .for_each(|input| assert!(reserved_word(input).is_err()))
+    .for_each(|input| assert!(reserved_word(span(input)).is_err()))
 }
 
 #[test]
 fn test_symbol() {
     [
-        ("@Blah", Token::At, "Blah"),
-        ("<- 0", Token::Assign, " 0"),
-        ("=> {", Token::DoubleArrow, " {"),
-        ("{ let", Token::OpenBraces, " let"),
-        ("};", Token::CloseBraces, ";"),
-        ("(abc", Token::OpenParens, "abc"),
-        (");", Token::CloseParens, ";"),
-        (".abc()", Token::Dot, "abc()"),
-        (", 1", Token::Comma, " 1"),
-        (": A", Token::Colon, " A"),
-        (";\n", Token::SemiColon, "\n"),
-        ("= 2", Token::Equals, " 2"),
-        ("+ 9", Token::Plus, " 9"),
-        ("- 5", Token::Minus, " 5"),
-        ("* 4", Token::Multiply, " 4"),
-        ("/ 3", Token::Divide, " 3"),
-        ("~ 8", Token::Negative, " 8"),
-        ("<= 10", Token::LessThanOrEquals, " 10"),
-        ("< 11", Token::LessThan, " 11"),
+        ("@Blah", TokenKind::At, "Blah"),
+        ("<- 0", TokenKind::Assign, " 0"),
+        ("=> {", TokenKind::DoubleArrow, " {"),
+        ("{ let", TokenKind::OpenBraces, " let"),
+        ("};", TokenKind::CloseBraces, ";"),
+        ("(abc", TokenKind::OpenParens, "abc"),
+        (");", TokenKind::CloseParens, ";"),
+        (".abc()", TokenKind::Dot, "abc()"),
+        (", 1", TokenKind::Comma, " 1"),
+        (": A", TokenKind::Colon, " A"),
+        (";\n", TokenKind::SemiColon, "\n"),
+        ("= 2", TokenKind::Equals, " 2"),
+        ("+ 9", TokenKind::Plus, " 9"),
+        ("- 5", TokenKind::Minus, " 5"),
+        ("* 4", TokenKind::Multiply, " 4"),
+        ("/ 3", TokenKind::Divide, " 3"),
+        ("~ 8", TokenKind::Negative, " 8"),
+        ("<= 10", TokenKind::LessThanOrEquals, " 10"),
+        ("< 11", TokenKind::LessThan, " 11"),
     ]
     .iter()
-    .for_each(|(input, token, rest)| {
+    .for_each(|(input, token_kind, rest)| {
         assert!(matches!(
-            symbol(input),
-            Ok((r, t)) if r == *rest && t == *token,
+            symbol(span(input)),
+            Ok((r, t)) if r.to_string() == *rest && t.kind == *token_kind,
         ))
     })
 }
@@ -140,7 +144,7 @@ fn test_bad_symbol() {
         "|", "`", ">", "?",
     ]
     .iter()
-    .for_each(|input| assert!(symbol(input).is_err()))
+    .for_each(|input| assert!(symbol(span(input)).is_err()))
 }
 
 #[test]
@@ -152,10 +156,11 @@ fn test_int_literal() {
         ("2147483647 ", i32::MAX, " "),
     ]
     .iter()
-    .for_each(|(input, value, rest)| {
+    .for_each(|(input, integer, rest)| {
         assert!(matches!(
-            int_literal(input),
-            Ok((r, Token::IntLiteral(v))) if r == *rest && v == *value,
+            int_literal(span(input)),
+            Ok((r, t)) if r.to_string() == *rest
+                && t.kind == TokenKind::IntLiteral(*integer),
         ))
     })
 }
@@ -164,7 +169,7 @@ fn test_int_literal() {
 fn test_bad_int_literal() {
     [" 0", "+1", "-1", "a1", "2147483648"]
         .iter()
-        .for_each(|input| assert!(int_literal(input).is_err()));
+        .for_each(|input| assert!(int_literal(span(input)).is_err()));
 }
 
 #[test]
@@ -179,8 +184,9 @@ fn test_str_literal() {
     .iter()
     .for_each(|(input, string, rest)| {
         assert!(matches!(
-            str_literal(input),
-            Ok((r, Token::StrLiteral(s))) if r == *rest && s == *string,
+            str_literal(span(input)),
+            Ok((r, t)) if r.to_string() == *rest
+                && t.kind == TokenKind::StrLiteral(string.to_string()),
         ))
     })
 }
@@ -189,7 +195,7 @@ fn test_str_literal() {
 fn test_bad_str_literal() {
     ["", " ", "\"", "\"abc", "abc"]
         .iter()
-        .for_each(|input| assert!(str_literal(input).is_err()))
+        .for_each(|input| assert!(str_literal(span(input)).is_err()))
 }
 
 #[test]
@@ -204,7 +210,10 @@ fn test_unescaped_fragment() {
     ]
     .iter()
     .for_each(|(input, fragment, rest)| {
-        assert_eq!(unescaped_fragment(input), Ok((*rest, *fragment)),)
+        assert!(matches!(
+            unescaped_fragment(span(input)),
+            Ok((r, f)) if r.to_string() == *rest && f.to_string() == *fragment,
+        ))
     })
 }
 
@@ -213,7 +222,7 @@ fn test_bad_unescaped_fragment() {
     // TODO: check null character is rejected
     ["", r"\n", r"\t", r"\\"]
         .iter()
-        .for_each(|input| assert!(unescaped_fragment(input).is_err()))
+        .for_each(|input| assert!(unescaped_fragment(span(input)).is_err()))
 }
 
 #[test]
@@ -229,7 +238,10 @@ fn test_escaped_char() {
     ]
     .iter()
     .for_each(|(input, ch, rest)| {
-        assert_eq!(escaped_char(input), Ok((*rest, *ch)),)
+        assert!(matches!(
+            escaped_char(span(input)),
+            Ok((r, c)) if r.to_string() == *rest && c == *ch,
+        ))
     })
 }
 
@@ -238,7 +250,7 @@ fn test_bad_escaped_char() {
     // TODO: test null character is rejected
     ["", r" ", r"n"]
         .iter()
-        .for_each(|input| assert!(escaped_char(input).is_err()))
+        .for_each(|input| assert!(escaped_char(span(input)).is_err()))
 }
 
 #[test]
@@ -246,10 +258,11 @@ fn test_false_literal() {
     [("false", ""), ("fAlSe;", ";"), ("fALSE ", " ")]
         .iter()
         .for_each(|(input, rest)| {
-            assert_eq!(
-                false_literal(input),
-                Ok((*rest, Token::BoolLiteral(false)))
-            )
+            assert!(matches!(
+                false_literal(span(input)),
+                Ok((r, t)) if r.to_string() == *rest
+                    && t.kind == TokenKind::BoolLiteral(false),
+            ))
         })
 }
 
@@ -257,7 +270,7 @@ fn test_false_literal() {
 fn test_bad_false_literal() {
     ["False", "FaLsE", "FALSE", "false_", "false0"]
         .iter()
-        .for_each(|input| assert!(false_literal(input).is_err()))
+        .for_each(|input| assert!(false_literal(span(input)).is_err()))
 }
 
 #[test]
@@ -265,10 +278,11 @@ fn test_true_literal() {
     [("true", ""), ("tRuE or", " or"), ("tRUE,", ",")]
         .iter()
         .for_each(|(input, rest)| {
-            assert_eq!(
-                true_literal(input),
-                Ok((*rest, Token::BoolLiteral(true)))
-            )
+            assert!(matches!(
+                true_literal(span(input)),
+                Ok((r, t)) if r.to_string() == *rest
+                    && t.kind == TokenKind::BoolLiteral(true),
+            ))
         })
 }
 
@@ -276,7 +290,7 @@ fn test_true_literal() {
 fn test_bad_true_literal() {
     ["True", "TrUe", "TRUE", "true_", "true1"]
         .iter()
-        .for_each(|input| assert!(true_literal(input).is_err()))
+        .for_each(|input| assert!(true_literal(span(input)).is_err()))
 }
 
 #[test]
@@ -292,7 +306,11 @@ fn test_type_id() {
     ]
     .iter()
     .for_each(|(input, id, rest)| {
-        assert_eq!(type_id(input), Ok((*rest, Token::TypeId(id.to_string()))))
+        assert!(matches!(
+            type_id(span(input)),
+            Ok((r, t)) if r.to_string() == *rest
+                && t.kind == TokenKind::TypeId(id.to_string()),
+        ))
     })
 }
 
@@ -303,11 +321,11 @@ fn test_bad_type_id() {
         "*H", "~IJK", "?L", "mNOP",
     ]
     .iter()
-    .for_each(|input| assert!(type_id(input).is_err()))
+    .for_each(|input| assert!(type_id(span(input)).is_err()))
 }
 
 #[test]
-fn test_object_id() {
+fn test_ident() {
     [
         ("a", "a", ""),
         ("b_ ", "b_", " "),
@@ -319,16 +337,20 @@ fn test_object_id() {
     ]
     .iter()
     .for_each(|(input, id, rest)| {
-        assert_eq!(ident(input), Ok((*rest, Token::Ident(id.to_string()))))
+        assert!(matches!(
+            ident(span(input)),
+            Ok((r, t)) if r.to_string() == *rest
+                && t.kind == TokenKind::Ident(id.to_string()),
+        ))
     })
 }
 
 #[test]
-fn test_bad_object_id() {
+fn test_bad_ident() {
     [
         "", "A", "_b", "0c", "_1", ":d", "$e", "@f", "#g", "£h", "%i", "&j",
         "*h", "~ijk", "?l", "Mnop",
     ]
     .iter()
-    .for_each(|input| assert!(ident(input).is_err()))
+    .for_each(|input| assert!(ident(span(input)).is_err()))
 }
