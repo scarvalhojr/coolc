@@ -1,7 +1,7 @@
 class A {
-    a: Int;
+    a: Int <- 1;
 };
 
 class B {
-    b: Bool;
+    b: Bool <- true;
 };

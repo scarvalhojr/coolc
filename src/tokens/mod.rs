@@ -9,6 +9,9 @@ use std::fmt::{Display, Formatter};
 use std::iter::Enumerate;
 use std::ops::{Range, RangeFrom, RangeFull, RangeTo};
 
+pub type TypeId = String;
+pub type Ident = String;
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum TokenKind {
     // Reserved words
@@ -43,8 +46,8 @@ pub enum TokenKind {
     Colon,
     SemiColon,
     Equals,
-    Plus,
-    Minus,
+    Add,
+    Subtract,
     Multiply,
     Divide,
     Negative,
@@ -57,21 +60,21 @@ pub enum TokenKind {
     BoolLiteral(bool),
 
     // Type and object identifiers
-    TypeId(String),
-    Ident(String),
+    TypeId(TypeId),
+    Ident(Ident),
 }
 
 pub type Span<'a> = LocatedSpan<&'a str, &'a str>;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Token<'a> {
     pub kind: TokenKind,
-    pub position: Span<'a>,
+    pub location: Span<'a>,
 }
 
 impl<'a> Token<'a> {
-    pub fn new(kind: TokenKind, position: Span<'a>) -> Self {
-        Self { kind, position }
+    pub fn new(kind: TokenKind, location: Span<'a>) -> Self {
+        Self { kind, location }
     }
 }
 
@@ -79,7 +82,7 @@ impl<'a> Token<'a> {
 // used in the Compilers course.
 impl Display for Token<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let line_num = self.position.location_line();
+        let line_num = self.location.location_line();
         let token = &self.kind;
         write!(f, "#{line_num} {token}")
     }
@@ -139,8 +142,8 @@ impl Display for TokenKind {
                 Self::Colon => "':'",
                 Self::SemiColon => "';'",
                 Self::Equals => "'='",
-                Self::Plus => "'+'",
-                Self::Minus => "'-'",
+                Self::Add => "'+'",
+                Self::Subtract => "'-'",
                 Self::Multiply => "'*'",
                 Self::Divide => "'/'",
                 Self::Negative => "'~'",
@@ -154,46 +157,47 @@ impl Display for TokenKind {
     }
 }
 
+#[derive(Clone, Copy, Debug)]
 pub struct Tokens<'a> {
-    pub tokens: &'a [Token<'a>],
+    pub array: &'a [Token<'a>],
     pub start: usize,
     pub end: usize,
 }
 
 impl<'a> Tokens<'a> {
-    pub fn new(tokens: &'a [Token]) -> Self {
+    pub fn new(array: &'a [Token]) -> Self {
         Tokens {
-            tokens,
+            array,
             start: 0,
-            end: tokens.len(),
+            end: array.len(),
         }
     }
 }
 
 impl<'a> InputLength for Tokens<'a> {
     fn input_len(&self) -> usize {
-        self.tokens.len()
+        self.array.len()
     }
 }
 
 impl<'a> InputTake for Tokens<'a> {
     fn take(&self, count: usize) -> Self {
         Tokens {
-            tokens: &self.tokens[0..count],
+            array: &self.array[0..count],
             start: 0,
             end: count,
         }
     }
 
     fn take_split(&self, count: usize) -> (Self, Self) {
-        let (prefix, suffix) = self.tokens.split_at(count);
+        let (prefix, suffix) = self.array.split_at(count);
         let first = Tokens {
-            tokens: prefix,
+            array: prefix,
             start: 0,
             end: prefix.len(),
         };
         let second = Tokens {
-            tokens: suffix,
+            array: suffix,
             start: 0,
             end: suffix.len(),
         };
@@ -204,7 +208,7 @@ impl<'a> InputTake for Tokens<'a> {
 impl<'a> Slice<Range<usize>> for Tokens<'a> {
     fn slice(&self, range: Range<usize>) -> Self {
         Tokens {
-            tokens: self.tokens.slice(range.clone()),
+            array: self.array.slice(range.clone()),
             start: self.start + range.start,
             end: self.start + range.end,
         }
@@ -226,7 +230,7 @@ impl<'a> Slice<RangeFrom<usize>> for Tokens<'a> {
 impl<'a> Slice<RangeFull> for Tokens<'a> {
     fn slice(&self, _: RangeFull) -> Self {
         Tokens {
-            tokens: self.tokens,
+            array: self.array,
             start: self.start,
             end: self.end,
         }
@@ -239,22 +243,22 @@ impl<'a> InputIter for Tokens<'a> {
     type IterElem = Iter<'a, Token<'a>>;
 
     fn iter_indices(&self) -> Enumerate<Iter<'a, Token<'a>>> {
-        self.tokens.iter().enumerate()
+        self.array.iter().enumerate()
     }
 
     fn iter_elements(&self) -> Iter<'a, Token<'a>> {
-        self.tokens.iter()
+        self.array.iter()
     }
 
     fn position<P>(&self, predicate: P) -> Option<usize>
     where
         P: Fn(Self::Item) -> bool,
     {
-        self.tokens.iter().position(predicate)
+        self.array.iter().position(predicate)
     }
 
     fn slice_index(&self, count: usize) -> Result<usize, Needed> {
-        if self.tokens.len() >= count {
+        if self.array.len() >= count {
             Ok(count)
         } else {
             Err(Needed::Unknown)

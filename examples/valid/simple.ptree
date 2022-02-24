@@ -10,8 +10,9 @@ _program
     _attr
       a
       Int
-      #0
-      _no_expr
+      #2
+      _int
+        1
       : _no_type
     )
   #5
@@ -24,7 +25,8 @@ _program
     _attr
       b
       Bool
-      #0
-      _no_expr
+      #6
+      _bool
+        1
       : _no_type
     )

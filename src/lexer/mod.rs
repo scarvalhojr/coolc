@@ -19,7 +19,14 @@ mod tests;
 
 // TODO: handle errors
 
-pub fn lex_tokens(input: Span) -> IResult<Span, Vec<Token>> {
+pub fn lex_tokens<'a>(
+    input: &'a str,
+    filename: &'a str,
+) -> IResult<Span<'a>, Vec<Token<'a>>> {
+    tokens(Span::new_extra(input, filename))
+}
+
+fn tokens(input: Span) -> IResult<Span, Vec<Token>> {
     terminated(
         many0(preceded(many0(discarded), token)),
         preceded(many0(discarded), eof),
@@ -112,8 +119,8 @@ fn symbol(input: Span) -> IResult<Span, Token> {
             value(TokenKind::Colon, tag(":")),
             value(TokenKind::SemiColon, tag(";")),
             value(TokenKind::Equals, tag("=")),
-            value(TokenKind::Plus, tag("+")),
-            value(TokenKind::Minus, tag("-")),
+            value(TokenKind::Add, tag("+")),
+            value(TokenKind::Subtract, tag("-")),
             value(TokenKind::Multiply, tag("*")),
             value(TokenKind::Divide, tag("/")),
             value(TokenKind::Negative, tag("~")),

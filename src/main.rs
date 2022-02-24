@@ -1,7 +1,6 @@
 use clap::{arg, command, crate_description, crate_version};
 use coolc::lexer::lex_tokens;
 use coolc::parser::parse_program;
-use coolc::tokens::Span;
 use std::fs::read_to_string;
 use std::process::exit;
 
@@ -27,7 +26,7 @@ fn main() {
         }
     };
 
-    let tokens = match lex_tokens(Span::new_extra(&source, filename)) {
+    let tokens = match lex_tokens(&source, filename) {
         Ok((_, tok)) => tok,
         Err(err) => {
             eprintln!("Scanner error: {err}.");
@@ -45,7 +44,7 @@ fn main() {
         exit(0);
     }
 
-    let parse_tree = match parse_program(&source) {
+    let parse_tree = match parse_program(&tokens) {
         Ok((_unparsed, tree)) => tree,
         Err(err) => {
             eprintln!("Parser error: {err}.");
@@ -55,7 +54,7 @@ fn main() {
 
     if args.is_present("parse") {
         // Print parse tree
-        println!("{}", parse_tree.print(filename));
+        print!("{}", parse_tree.format());
     } else {
         eprintln!("Program compiled successfully.");
     }

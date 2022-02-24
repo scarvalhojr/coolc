@@ -21,7 +21,7 @@ fn test_lex_tokens() {
     .iter()
     .for_each(|(input, count)| {
         assert!(matches!(
-            lex_tokens(span(input)),
+            lex_tokens(input, ""),
             Ok((r, t)) if r.to_string().is_empty() && t.len() == *count,
         ))
     })
@@ -120,8 +120,8 @@ fn test_symbol() {
         (": A", TokenKind::Colon, " A"),
         (";\n", TokenKind::SemiColon, "\n"),
         ("= 2", TokenKind::Equals, " 2"),
-        ("+ 9", TokenKind::Plus, " 9"),
-        ("- 5", TokenKind::Minus, " 5"),
+        ("+ 9", TokenKind::Add, " 9"),
+        ("- 5", TokenKind::Subtract, " 5"),
         ("* 4", TokenKind::Multiply, " 4"),
         ("/ 3", TokenKind::Divide, " 3"),
         ("~ 8", TokenKind::Negative, " 8"),
