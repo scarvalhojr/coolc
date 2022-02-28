@@ -1,0 +1,42 @@
+class A {
+    a: Int <- 1 + 2;
+    b: Int <- 3 - 4;
+    c: Int <- 5 * 6;
+    d: Int <- 7 / 8;
+    e: Int <- 1 + 2 * ~ 3 + 4 / 5 - (6 + ~ 7) * 8 * (9) + 10 * ~ (11 / (12 - (13 + 14)));
+    f: Int <- (((1 + 2) * (~ 3 - 4)) / ((5 + 6) * (7 - 8))) * ~ (((9 - 10) * (~ 11 + 12)) / ((13 / (~ 14)) * (15 - 16)));
+    g: Bool <- 2 * 3 <= ~ 4 + 9;
+    h: Bool <- 10 / ~ 2 - 3 < 7 + 2 * 4;
+    i: Bool <- not not (5 - 2) * ~ 3 - 4 = 10 + ~ (15 - 8) / 2;
+    j: Bool <- not not isvoid obj;
+    k: Bool
+        <-
+        isvoid (
+            obj1
+                <-
+                    obj2
+                        <-
+                            obj3
+                                <-
+                                    obj4);
+    -- l: Bool <- isvoid obj1 <- obj2 <- obj3 <- obj4;  -- what is the correct parse here?
+    m(): Bool { true };
+    n(a: Int): Int { 0 };
+    o(a: A, b: B, c: C): D { 1 + 2 };
+    p: Object <- method();
+    q: Int <-
+        method
+        (
+            1,
+            "param",
+            true
+        );
+    r: R <- obj
+        .
+        method
+        (
+        )
+        ;
+    s: S <- 1 + 2 . m();
+    t: S <- (1 + 2). m();
+};

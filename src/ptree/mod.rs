@@ -70,12 +70,33 @@ impl<'a> Feature<'a> {
 #[derive(Debug, PartialEq)]
 pub enum FeatureData<'a> {
     Attribute(Ident, TypeId, Option<Expression<'a>>),
-    // Method(Ident, TypeId, Vec<Formals>, Option<Expression<'a>),
+    Method(Ident, TypeId, Vec<Formal<'a>>, Expression<'a>),
 }
 
 impl FeatureData<'_> {
     pub fn format(&self, indent: usize) -> FeatureDataFormatter {
         FeatureDataFormatter::new(self, indent)
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Formal<'a> {
+    pub name: Ident,
+    pub type_id: TypeId,
+    pub location: Span<'a>,
+}
+
+impl<'a> Formal<'a> {
+    pub fn new(name: Ident, type_id: TypeId, location: Span<'a>) -> Self {
+        Self {
+            name,
+            type_id,
+            location,
+        }
+    }
+
+    pub fn format(&self, indent: usize) -> FormalFormatter {
+        FormalFormatter::new(self, indent)
     }
 }
 
@@ -97,22 +118,28 @@ impl<'a> Expression<'a> {
 
 #[derive(Debug, PartialEq)]
 pub enum ExpressionData<'a> {
-    ArithOperation(ArithOperator, Box<Expression<'a>>, Box<Expression<'a>>),
-    CompOperation(CompOperator, Box<Expression<'a>>, Box<Expression<'a>>),
+    Assign(Ident, Box<Expression<'a>>),
+    UnaryOperation(UnaryOperator, Box<Expression<'a>>),
+    BinaryOperation(BinaryOperator, Box<Expression<'a>>, Box<Expression<'a>>),
+    MethodCall(Box<Expression<'a>>, Ident, Vec<Expression<'a>>),
+    Object(Ident),
     IntLiteral(i32),
     StrLiteral(String),
     BoolLiteral(bool),
 }
 
 #[derive(Debug, PartialEq)]
-pub enum CompOperator {
-    Equals,
-    LessThanOrEquals,
-    LessThan,
+pub enum UnaryOperator {
+    Not,
+    Negative,
+    IsVoid,
 }
 
 #[derive(Debug, PartialEq)]
-pub enum ArithOperator {
+pub enum BinaryOperator {
+    Equals,
+    LessThanOrEquals,
+    LessThan,
     Add,
     Subtract,
     Multiply,
@@ -120,37 +147,47 @@ pub enum ArithOperator {
 }
 
 impl<'a> ExpressionData<'a> {
-    pub fn new_comp_operation(
-        operand1: Expression<'a>,
-        operator: &TokenKind,
-        operand2: Expression<'a>,
-    ) -> Self {
-        let expr1 = Box::new(operand1);
-        let expr2 = Box::new(operand2);
-        let oper = match operator {
-            TokenKind::Equals => CompOperator::Equals,
-            TokenKind::LessThanOrEquals => CompOperator::LessThanOrEquals,
-            TokenKind::LessThan => CompOperator::LessThan,
-            _ => panic!("Invalid comparison operator"),
-        };
-        CompOperation(oper, expr1, expr2)
+    pub fn new_assign(ident: Ident, expression: Expression<'a>) -> Self {
+        Assign(ident, Box::new(expression))
     }
 
-    pub fn new_arith_operation(
+    pub fn new_unary_operation(
+        operator: &TokenKind,
+        operand: Expression<'a>,
+    ) -> Self {
+        let oper = match operator {
+            TokenKind::Not => UnaryOperator::Not,
+            TokenKind::Negative => UnaryOperator::Negative,
+            TokenKind::IsVoid => UnaryOperator::IsVoid,
+            _ => panic!("Invalid unary operator"),
+        };
+        UnaryOperation(oper, Box::new(operand))
+    }
+
+    pub fn new_binary_operation(
         operand1: Expression<'a>,
         operator: &TokenKind,
         operand2: Expression<'a>,
     ) -> Self {
-        let expr1 = Box::new(operand1);
-        let expr2 = Box::new(operand2);
         let oper = match operator {
-            TokenKind::Add => ArithOperator::Add,
-            TokenKind::Subtract => ArithOperator::Subtract,
-            TokenKind::Multiply => ArithOperator::Multiply,
-            TokenKind::Divide => ArithOperator::Divide,
-            _ => panic!("Invalid arithmetic operator"),
+            TokenKind::Equals => BinaryOperator::Equals,
+            TokenKind::LessThanOrEquals => BinaryOperator::LessThanOrEquals,
+            TokenKind::LessThan => BinaryOperator::LessThan,
+            TokenKind::Add => BinaryOperator::Add,
+            TokenKind::Subtract => BinaryOperator::Subtract,
+            TokenKind::Multiply => BinaryOperator::Multiply,
+            TokenKind::Divide => BinaryOperator::Divide,
+            _ => panic!("Invalid binary operator"),
         };
-        ArithOperation(oper, expr1, expr2)
+        BinaryOperation(oper, Box::new(operand1), Box::new(operand2))
+    }
+
+    pub fn new_method_call(
+        expr: Expression<'a>,
+        ident: Ident,
+        params: Vec<Expression<'a>>,
+    ) -> Self {
+        MethodCall(Box::new(expr), ident, params)
     }
 
     pub fn format(&self, indent: usize) -> ExpressionDataFormatter {

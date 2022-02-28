@@ -4,4 +4,6 @@ class A {
 
 class B {
     b: Bool <- true;
+    c: Object;
+    d: String <- "a\tstring\n\0\\.";
 };

@@ -6,8 +6,10 @@ use crate::tokens::{Ident, Span, Token, TokenKind, Tokens, TypeId};
 use nom::branch::alt;
 use nom::bytes::complete::take;
 use nom::combinator::{eof, map, map_res, opt, peek};
-use nom::multi::{many0, many1};
-use nom::sequence::{delimited, preceded, terminated, tuple};
+use nom::multi::{many0, many1, separated_list0};
+use nom::sequence::{
+    delimited, pair, preceded, separated_pair, terminated, tuple,
+};
 use nom::IResult;
 use FeatureData::*;
 
@@ -44,8 +46,7 @@ fn class(input: Tokens) -> IResult<Tokens, Class> {
 }
 
 fn feature(input: Tokens) -> IResult<Tokens, Feature> {
-    // TODO: methods
-    terminated(attribute, semicolon_token)(input)
+    terminated(alt((attribute, method)), semicolon_token)(input)
 }
 
 fn attribute(input: Tokens) -> IResult<Tokens, Feature> {
@@ -62,33 +63,96 @@ fn attribute(input: Tokens) -> IResult<Tokens, Feature> {
     )(input)
 }
 
+fn method(input: Tokens) -> IResult<Tokens, Feature> {
+    let (_, location) = current_location(input)?;
+    map(
+        tuple((
+            ident,
+            delimited(
+                open_parens_token,
+                separated_list0(comma_token, formal),
+                close_parens_token,
+            ),
+            preceded(colon_token, type_id),
+            delimited(open_braces_token, expression, close_braces_token),
+        )),
+        move |(obj_id, formals, type_id, expr)| {
+            Feature::new(Method(obj_id, type_id, formals, expr), location)
+        },
+    )(input)
+}
+
+fn formal(input: Tokens) -> IResult<Tokens, Formal> {
+    let (_, location) = current_location(input)?;
+    map(
+        separated_pair(ident, colon_token, type_id),
+        move |(id, type_id)| Formal::new(id, type_id, location),
+    )(input)
+}
+
+// Operator precedence (lowest to highest):
+// assign
+// not
+// less_than_or_equals, less_than, equals
+// add, subtract
+// multiply, divide
+// isvoid
+// negative
+// at                   (to be implemented)
+// dot                  (to be implemented)
+
 fn expression<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
-    let (rest, operand1) = term(input)?;
-    many0(tuple((alt((add_token, subtract_token)), term)))(rest).map(
-        |(tokens, operations)| (tokens, build_arith_expr(operand1, operations)),
+    alt((assign, bool_not_oper, comparison_oper))(input)
+}
+
+fn assign<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    let (_, location) = current_location(input)?;
+    map(
+        separated_pair(ident, assign_token, expression),
+        move |(id, expr)| {
+            Expression::new(ExpressionData::new_assign(id, expr), location)
+        },
+    )(input)
+}
+
+fn bool_not_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    map(pair(not_token, expression), |(token, expr)| {
+        let expr_data = ExpressionData::new_unary_operation(&token.kind, expr);
+        let location = token.location;
+        Expression::new(expr_data, location)
+    })(input)
+}
+
+fn comparison_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    let (rest, operand1) = add_sub_oper(input)?;
+    many0(pair(
+        alt((less_than_or_equals_token, less_than_token, equals_token)),
+        add_sub_oper,
+    ))(rest)
+    .map(|(tokens, operations)| {
+        (tokens, build_binary_expr(operand1, operations))
+    })
+}
+
+fn add_sub_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    let (rest, operand1) = mul_div_oper(input)?;
+    many0(pair(alt((add_token, subtract_token)), mul_div_oper))(rest).map(
+        |(tokens, operations)| {
+            (tokens, build_binary_expr(operand1, operations))
+        },
     )
 }
 
-fn term<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
-    let (rest, operand1) = factor(input)?;
-    many0(tuple((alt((multiply_token, divide_token)), factor)))(rest).map(
-        |(tokens, operations)| (tokens, build_arith_expr(operand1, operations)),
+fn mul_div_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    let (rest, operand1) = operand(input)?;
+    many0(pair(alt((multiply_token, divide_token)), operand))(rest).map(
+        |(tokens, operations)| {
+            (tokens, build_binary_expr(operand1, operations))
+        },
     )
 }
 
-fn factor<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
-    alt((
-        // TODO: lots more here...
-        parens_expression,
-        literal,
-    ))(input)
-}
-
-fn parens_expression<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
-    delimited(open_parens_token, expression, close_parens_token)(input)
-}
-
-fn build_arith_expr<'a>(
+fn build_binary_expr<'a>(
     first_operand: Expression<'a>,
     operations: Vec<(Token<'a>, Expression<'a>)>,
 ) -> Expression<'a> {
@@ -96,10 +160,83 @@ fn build_arith_expr<'a>(
         .into_iter()
         .fold(first_operand, |acc, (token, expr)| {
             let expr_data =
-                ExpressionData::new_arith_operation(acc, &token.kind, expr);
+                ExpressionData::new_binary_operation(acc, &token.kind, expr);
             let location = token.location;
             Expression::new(expr_data, location)
         })
+}
+
+fn operand<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    alt((
+        isvoid_oper,
+        negative_oper,
+        // TODO: lots more here... if-then-else, case, etc.
+        method_call,
+        term,
+    ))(input)
+}
+
+fn isvoid_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    map(pair(isvoid_token, term), |(token, expr)| {
+        let expr_data = ExpressionData::new_unary_operation(&token.kind, expr);
+        let location = token.location;
+        Expression::new(expr_data, location)
+    })(input)
+}
+
+fn negative_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    map(pair(negative_token, term), |(token, expr)| {
+        let expr_data = ExpressionData::new_unary_operation(&token.kind, expr);
+        let location = token.location;
+        Expression::new(expr_data, location)
+    })(input)
+}
+
+fn method_call<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    let (_, self_location) = current_location(input)?;
+    // TODO: support chained method calls
+    map(
+        tuple((
+            opt(pair(term, dot_token)),
+            ident,
+            delimited(
+                open_parens_token,
+                separated_list0(comma_token, expression),
+                close_parens_token,
+            ),
+        )),
+        move |(expr, name, params)| {
+            let (object, location) = match expr {
+                Some((obj, dot)) => (obj, dot.location),
+                _ => (
+                    Expression::new(
+                        ExpressionData::Object("self".to_string()),
+                        self_location,
+                    ),
+                    self_location,
+                ),
+            };
+            Expression::new(
+                ExpressionData::new_method_call(object, name, params),
+                location,
+            )
+        },
+    )(input)
+}
+
+fn term<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    alt((parens_expression, object, literal))(input)
+}
+
+fn parens_expression<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    delimited(open_parens_token, expression, close_parens_token)(input)
+}
+
+fn object<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+    let (_, location) = current_location(input)?;
+    map(ident, move |id| {
+        Expression::new(ExpressionData::Object(id), location)
+    })(input)
 }
 
 fn literal(input: Tokens) -> IResult<Tokens, Expression> {

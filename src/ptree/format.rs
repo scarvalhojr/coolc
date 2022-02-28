@@ -1,6 +1,7 @@
 //! Structures for formatting parse trees for printing.
 
 use super::*;
+use crate::util::escape_str;
 use std::fmt::{Display, Formatter};
 use FeatureData::*;
 
@@ -108,11 +109,11 @@ impl<'a> FeatureDataFormatter<'a> {
 
 impl<'a> Display for FeatureDataFormatter<'a> {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+        let empty = "";
+        let indent = self.indent;
+        let next_indent = self.indent + INDENTATION;
         match self.feature {
             Attribute(name, type_id, init) => {
-                let empty = "";
-                let indent = self.indent;
-                let next_indent = self.indent + INDENTATION;
                 writeln!(
                     f,
                     "\
@@ -132,7 +133,55 @@ impl<'a> Display for FeatureDataFormatter<'a> {
                     )
                 }
             }
+            Method(name, type_id, formals, expr) => {
+                writeln!(
+                    f,
+                    "\
+                    {empty:indent$}_method\n\
+                    {empty:next_indent$}{name}"
+                )?;
+                for formal in formals {
+                    write!(f, "{}", formal.format(next_indent))?;
+                }
+                write!(
+                    f,
+                    "\
+                    {empty:next_indent$}{type_id}\n\
+                    {}",
+                    expr.format(next_indent)
+                )
+            }
         }
+    }
+}
+
+pub struct FormalFormatter<'a> {
+    formal: &'a Formal<'a>,
+    indent: usize,
+}
+
+impl<'a> FormalFormatter<'a> {
+    pub fn new(formal: &'a Formal, indent: usize) -> Self {
+        Self { formal, indent }
+    }
+}
+
+impl<'a> Display for FormalFormatter<'a> {
+    fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+        let empty = "";
+        let indent = self.indent;
+        let next_indent = self.indent + INDENTATION;
+        let line_num = self.formal.location.location_line();
+        let name = &self.formal.name;
+        let type_id = &self.formal.type_id;
+        writeln!(
+            f,
+            "\
+            {empty:indent$}#{line_num}\n\
+            {empty:indent$}_formal\n\
+            {empty:next_indent$}{name}\n\
+            {empty:next_indent$}{type_id}"
+        )
     }
 }
 
@@ -175,12 +224,98 @@ impl<'a> Display for ExpressionDataFormatter<'a> {
         let next_indent = self.indent + INDENTATION;
 
         match self.expression {
+            Assign(ident, expr) => {
+                let expression = expr.format(next_indent);
+                writeln!(
+                    f,
+                    "\
+                    {empty:indent$}_assign\n\
+                    {empty:next_indent$}{ident}\n\
+                    {expression}\
+                    {empty:indent$}: _no_type"
+                )
+            }
+            UnaryOperation(operator, operand) => {
+                let oper = match operator {
+                    UnaryOperator::Not => "_comp",
+                    UnaryOperator::Negative => "_neg",
+                    UnaryOperator::IsVoid => "_isvoid",
+                };
+                let op = operand.format(next_indent);
+                writeln!(
+                    f,
+                    "\
+                    {empty:indent$}{oper}\n\
+                    {op}\
+                    {empty:indent$}: _no_type"
+                )
+            }
+            BinaryOperation(operator, operand1, operand2) => {
+                let oper = match operator {
+                    BinaryOperator::Equals => "_eq",
+                    BinaryOperator::LessThanOrEquals => "_leq",
+                    BinaryOperator::LessThan => "_lt",
+                    BinaryOperator::Add => "_plus",
+                    BinaryOperator::Subtract => "_sub",
+                    BinaryOperator::Multiply => "_mul",
+                    BinaryOperator::Divide => "_divide",
+                };
+                let op1 = operand1.format(next_indent);
+                let op2 = operand2.format(next_indent);
+                writeln!(
+                    f,
+                    "\
+                    {empty:indent$}{oper}\n\
+                    {op1}\
+                    {op2}\
+                    {empty:indent$}: _no_type"
+                )
+            }
+            Object(ident) => {
+                writeln!(
+                    f,
+                    "\
+                    {empty:indent$}_object\n\
+                    {empty:next_indent$}{ident}\n\
+                    {empty:indent$}: _no_type"
+                )
+            }
+            MethodCall(object, ident, params) => {
+                let expression = object.format(next_indent);
+                writeln!(
+                    f,
+                    "\
+                    {empty:indent$}_dispatch\n\
+                    {expression}\
+                    {empty:next_indent$}{ident}\n\
+                    {empty:next_indent$}(",
+                )?;
+                for param in params.iter() {
+                    write!(f, "{}", param.format(next_indent))?;
+                }
+                writeln!(
+                    f,
+                    "\
+                    {empty:next_indent$})\n\
+                    {empty:indent$}: _no_type"
+                )
+            }
             IntLiteral(integer) => {
                 writeln!(
                     f,
                     "\
                     {empty:indent$}_int\n\
                     {empty:next_indent$}{integer}\n\
+                    {empty:indent$}: _no_type"
+                )
+            }
+            StrLiteral(string) => {
+                let escaped_str = escape_str(string);
+                writeln!(
+                    f,
+                    "\
+                    {empty:indent$}_string\n\
+                    {empty:next_indent$}\"{escaped_str}\"\n\
                     {empty:indent$}: _no_type"
                 )
             }
@@ -194,7 +329,6 @@ impl<'a> Display for ExpressionDataFormatter<'a> {
                     {empty:indent$}: _no_type"
                 )
             }
-            _ => unimplemented!(),
         }
     }
 }

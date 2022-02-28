@@ -29,4 +29,19 @@ _program
       _bool
         1
       : _no_type
+    #7
+    _attr
+      c
+      Object
+      #0
+      _no_expr
+      : _no_type
+    #8
+    _attr
+      d
+      String
+      #8
+      _string
+        "a\tstring\n0\\."
+      : _no_type
     )

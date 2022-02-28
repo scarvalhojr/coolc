@@ -1,0 +1,335 @@
+#name "examples/valid/expressions.cool"
+#1 CLASS
+#1 TYPEID A
+#1 '{'
+#2 OBJECTID a
+#2 ':'
+#2 TYPEID Int
+#2 ASSIGN
+#2 INT_CONST 1
+#2 '+'
+#2 INT_CONST 2
+#2 ';'
+#3 OBJECTID b
+#3 ':'
+#3 TYPEID Int
+#3 ASSIGN
+#3 INT_CONST 3
+#3 '-'
+#3 INT_CONST 4
+#3 ';'
+#4 OBJECTID c
+#4 ':'
+#4 TYPEID Int
+#4 ASSIGN
+#4 INT_CONST 5
+#4 '*'
+#4 INT_CONST 6
+#4 ';'
+#5 OBJECTID d
+#5 ':'
+#5 TYPEID Int
+#5 ASSIGN
+#5 INT_CONST 7
+#5 '/'
+#5 INT_CONST 8
+#5 ';'
+#6 OBJECTID e
+#6 ':'
+#6 TYPEID Int
+#6 ASSIGN
+#6 INT_CONST 1
+#6 '+'
+#6 INT_CONST 2
+#6 '*'
+#6 '~'
+#6 INT_CONST 3
+#6 '+'
+#6 INT_CONST 4
+#6 '/'
+#6 INT_CONST 5
+#6 '-'
+#6 '('
+#6 INT_CONST 6
+#6 '+'
+#6 '~'
+#6 INT_CONST 7
+#6 ')'
+#6 '*'
+#6 INT_CONST 8
+#6 '*'
+#6 '('
+#6 INT_CONST 9
+#6 ')'
+#6 '+'
+#6 INT_CONST 10
+#6 '*'
+#6 '~'
+#6 '('
+#6 INT_CONST 11
+#6 '/'
+#6 '('
+#6 INT_CONST 12
+#6 '-'
+#6 '('
+#6 INT_CONST 13
+#6 '+'
+#6 INT_CONST 14
+#6 ')'
+#6 ')'
+#6 ')'
+#6 ';'
+#7 OBJECTID f
+#7 ':'
+#7 TYPEID Int
+#7 ASSIGN
+#7 '('
+#7 '('
+#7 '('
+#7 INT_CONST 1
+#7 '+'
+#7 INT_CONST 2
+#7 ')'
+#7 '*'
+#7 '('
+#7 '~'
+#7 INT_CONST 3
+#7 '-'
+#7 INT_CONST 4
+#7 ')'
+#7 ')'
+#7 '/'
+#7 '('
+#7 '('
+#7 INT_CONST 5
+#7 '+'
+#7 INT_CONST 6
+#7 ')'
+#7 '*'
+#7 '('
+#7 INT_CONST 7
+#7 '-'
+#7 INT_CONST 8
+#7 ')'
+#7 ')'
+#7 ')'
+#7 '*'
+#7 '~'
+#7 '('
+#7 '('
+#7 '('
+#7 INT_CONST 9
+#7 '-'
+#7 INT_CONST 10
+#7 ')'
+#7 '*'
+#7 '('
+#7 '~'
+#7 INT_CONST 11
+#7 '+'
+#7 INT_CONST 12
+#7 ')'
+#7 ')'
+#7 '/'
+#7 '('
+#7 '('
+#7 INT_CONST 13
+#7 '/'
+#7 '('
+#7 '~'
+#7 INT_CONST 14
+#7 ')'
+#7 ')'
+#7 '*'
+#7 '('
+#7 INT_CONST 15
+#7 '-'
+#7 INT_CONST 16
+#7 ')'
+#7 ')'
+#7 ')'
+#7 ';'
+#8 OBJECTID g
+#8 ':'
+#8 TYPEID Bool
+#8 ASSIGN
+#8 INT_CONST 2
+#8 '*'
+#8 INT_CONST 3
+#8 LE
+#8 '~'
+#8 INT_CONST 4
+#8 '+'
+#8 INT_CONST 9
+#8 ';'
+#9 OBJECTID h
+#9 ':'
+#9 TYPEID Bool
+#9 ASSIGN
+#9 INT_CONST 10
+#9 '/'
+#9 '~'
+#9 INT_CONST 2
+#9 '-'
+#9 INT_CONST 3
+#9 '<'
+#9 INT_CONST 7
+#9 '+'
+#9 INT_CONST 2
+#9 '*'
+#9 INT_CONST 4
+#9 ';'
+#10 OBJECTID i
+#10 ':'
+#10 TYPEID Bool
+#10 ASSIGN
+#10 NOT
+#10 NOT
+#10 '('
+#10 INT_CONST 5
+#10 '-'
+#10 INT_CONST 2
+#10 ')'
+#10 '*'
+#10 '~'
+#10 INT_CONST 3
+#10 '-'
+#10 INT_CONST 4
+#10 '='
+#10 INT_CONST 10
+#10 '+'
+#10 '~'
+#10 '('
+#10 INT_CONST 15
+#10 '-'
+#10 INT_CONST 8
+#10 ')'
+#10 '/'
+#10 INT_CONST 2
+#10 ';'
+#11 OBJECTID j
+#11 ':'
+#11 TYPEID Bool
+#11 ASSIGN
+#11 NOT
+#11 NOT
+#11 ISVOID
+#11 OBJECTID obj
+#11 ';'
+#12 OBJECTID k
+#12 ':'
+#12 TYPEID Bool
+#13 ASSIGN
+#14 ISVOID
+#14 '('
+#15 OBJECTID obj1
+#16 ASSIGN
+#17 OBJECTID obj2
+#18 ASSIGN
+#19 OBJECTID obj3
+#20 ASSIGN
+#21 OBJECTID obj4
+#21 ')'
+#21 ';'
+#23 OBJECTID m
+#23 '('
+#23 ')'
+#23 ':'
+#23 TYPEID Bool
+#23 '{'
+#23 BOOL_CONST true
+#23 '}'
+#23 ';'
+#24 OBJECTID n
+#24 '('
+#24 OBJECTID a
+#24 ':'
+#24 TYPEID Int
+#24 ')'
+#24 ':'
+#24 TYPEID Int
+#24 '{'
+#24 INT_CONST 0
+#24 '}'
+#24 ';'
+#25 OBJECTID o
+#25 '('
+#25 OBJECTID a
+#25 ':'
+#25 TYPEID A
+#25 ','
+#25 OBJECTID b
+#25 ':'
+#25 TYPEID B
+#25 ','
+#25 OBJECTID c
+#25 ':'
+#25 TYPEID C
+#25 ')'
+#25 ':'
+#25 TYPEID D
+#25 '{'
+#25 INT_CONST 1
+#25 '+'
+#25 INT_CONST 2
+#25 '}'
+#25 ';'
+#26 OBJECTID p
+#26 ':'
+#26 TYPEID Object
+#26 ASSIGN
+#26 OBJECTID method
+#26 '('
+#26 ')'
+#26 ';'
+#27 OBJECTID q
+#27 ':'
+#27 TYPEID Int
+#27 ASSIGN
+#28 OBJECTID method
+#29 '('
+#30 INT_CONST 1
+#30 ','
+#31 STR_CONST "param"
+#31 ','
+#32 BOOL_CONST true
+#33 ')'
+#33 ';'
+#34 OBJECTID r
+#34 ':'
+#34 TYPEID R
+#34 ASSIGN
+#34 OBJECTID obj
+#35 '.'
+#36 OBJECTID method
+#37 '('
+#38 ')'
+#39 ';'
+#40 OBJECTID s
+#40 ':'
+#40 TYPEID S
+#40 ASSIGN
+#40 INT_CONST 1
+#40 '+'
+#40 INT_CONST 2
+#40 '.'
+#40 OBJECTID m
+#40 '('
+#40 ')'
+#40 ';'
+#41 OBJECTID t
+#41 ':'
+#41 TYPEID S
+#41 ASSIGN
+#41 '('
+#41 INT_CONST 1
+#41 '+'
+#41 INT_CONST 2
+#41 ')'
+#41 '.'
+#41 OBJECTID m
+#41 '('
+#41 ')'
+#41 ';'
+#42 '}'
+#42 ';'

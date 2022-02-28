@@ -2,6 +2,7 @@
 //! The code here is largely a copy of the Monkey tokenizer from
 //! https://github.com/Rydgel/monkey-rust
 
+use crate::util::escape_str;
 use core::slice::Iter;
 use nom::{InputIter, InputLength, InputTake, Needed, Slice};
 use nom_locate::LocatedSpan;
@@ -90,24 +91,10 @@ impl Display for Token<'_> {
 
 impl Display for TokenKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let escape = |s: &str| {
-            s.chars().fold(String::new(), |mut string, ch| {
-                match ch {
-                    '\\' => string.push_str(r"\\"),
-                    '\n' => string.push_str(r"\n"),
-                    '\t' => string.push_str(r"\t"),
-                    '\u{08}' => string.push_str(r"\b"),
-                    '\u{0C}' => string.push_str(r"\f"),
-                    c => string.push(c),
-                };
-                string
-            })
-        };
-
         let output = match self {
             Self::IntLiteral(integer) => format!("INT_CONST {integer}"),
             Self::StrLiteral(string) => {
-                format!("STR_CONST \"{}\"", escape(string))
+                format!("STR_CONST \"{}\"", escape_str(string))
             }
             Self::BoolLiteral(kind) => format!("BOOL_CONST {kind}"),
             Self::TypeId(id) => format!("TYPEID {id}"),
