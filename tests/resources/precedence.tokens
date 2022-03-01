@@ -1,0 +1,15 @@
+#name "precedence.cool"
+#1 CLASS
+#1 TYPEID A
+#1 '{'
+#3 OBJECTID l
+#3 ':'
+#3 TYPEID Bool
+#3 ASSIGN
+#3 ISVOID
+#3 OBJECTID obj1
+#3 ASSIGN
+#3 OBJECTID obj2
+#3 ';'
+#4 '}'
+#4 ';'

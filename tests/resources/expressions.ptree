@@ -4,7 +4,7 @@ _program
   _class
     A
     Object
-    "examples/valid/expressions.cool"
+    "expressions.cool"
     (
     #2
     _attr

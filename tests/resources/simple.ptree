@@ -4,7 +4,7 @@ _program
   _class
     A
     Object
-    "examples/valid/simple.cool"
+    "simple.cool"
     (
     #2
     _attr
@@ -19,7 +19,7 @@ _program
   _class
     B
     Object
-    "examples/valid/simple.cool"
+    "simple.cool"
     (
     #6
     _attr

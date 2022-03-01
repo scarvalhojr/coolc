@@ -1,0 +1,4 @@
+class A {
+    -- what is the correct parse here?
+    l: Bool <- isvoid obj1 <- obj2;
+};

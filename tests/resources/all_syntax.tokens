@@ -1,4 +1,4 @@
-#name "examples/valid/all_syntax.cool"
+#name "all_syntax.cool"
 #7 CLASS
 #7 TYPEID Foo
 #7 '{'
