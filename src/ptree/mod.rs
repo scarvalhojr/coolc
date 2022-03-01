@@ -121,7 +121,12 @@ pub enum ExpressionData<'a> {
     Assign(Ident, Box<Expression<'a>>),
     UnaryOperation(UnaryOperator, Box<Expression<'a>>),
     BinaryOperation(BinaryOperator, Box<Expression<'a>>, Box<Expression<'a>>),
-    MethodCall(Box<Expression<'a>>, Ident, Vec<Expression<'a>>),
+    MethodCall(
+        Box<Expression<'a>>,
+        Option<TypeId>,
+        Ident,
+        Vec<Expression<'a>>,
+    ),
     Object(Ident),
     IntLiteral(i32),
     StrLiteral(String),
@@ -184,10 +189,11 @@ impl<'a> ExpressionData<'a> {
 
     pub fn new_method_call(
         expr: Expression<'a>,
+        static_type: Option<TypeId>,
         ident: Ident,
         params: Vec<Expression<'a>>,
     ) -> Self {
-        MethodCall(Box::new(expr), ident, params)
+        MethodCall(Box::new(expr), static_type, ident, params)
     }
 
     pub fn format(&self, indent: usize) -> ExpressionDataFormatter {

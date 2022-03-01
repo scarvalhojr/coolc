@@ -98,14 +98,14 @@ fn formal(input: Tokens) -> IResult<Tokens, Formal> {
 // multiply, divide
 // isvoid
 // negative
-// at                   (to be implemented)
-// dot                  (to be implemented)
+// at
+// dot
 
-fn expression<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn expression(input: Tokens) -> IResult<Tokens, Expression> {
     alt((assign, bool_not_oper, comparison_oper))(input)
 }
 
-fn assign<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn assign(input: Tokens) -> IResult<Tokens, Expression> {
     let (_, location) = current_location(input)?;
     map(
         separated_pair(ident, assign_token, expression),
@@ -115,7 +115,7 @@ fn assign<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
     )(input)
 }
 
-fn bool_not_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn bool_not_oper(input: Tokens) -> IResult<Tokens, Expression> {
     map(pair(not_token, expression), |(token, expr)| {
         let expr_data = ExpressionData::new_unary_operation(&token.kind, expr);
         let location = token.location;
@@ -123,7 +123,7 @@ fn bool_not_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
     })(input)
 }
 
-fn comparison_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn comparison_oper(input: Tokens) -> IResult<Tokens, Expression> {
     let (rest, operand1) = add_sub_oper(input)?;
     many0(pair(
         alt((less_than_or_equals_token, less_than_token, equals_token)),
@@ -134,7 +134,7 @@ fn comparison_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
     })
 }
 
-fn add_sub_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn add_sub_oper(input: Tokens) -> IResult<Tokens, Expression> {
     let (rest, operand1) = mul_div_oper(input)?;
     many0(pair(alt((add_token, subtract_token)), mul_div_oper))(rest).map(
         |(tokens, operations)| {
@@ -143,7 +143,7 @@ fn add_sub_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
     )
 }
 
-fn mul_div_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn mul_div_oper(input: Tokens) -> IResult<Tokens, Expression> {
     let (rest, operand1) = operand(input)?;
     many0(pair(alt((multiply_token, divide_token)), operand))(rest).map(
         |(tokens, operations)| {
@@ -166,7 +166,7 @@ fn build_binary_expr<'a>(
         })
 }
 
-fn operand<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn operand(input: Tokens) -> IResult<Tokens, Expression> {
     alt((
         isvoid_oper,
         negative_oper,
@@ -176,7 +176,7 @@ fn operand<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
     ))(input)
 }
 
-fn isvoid_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn isvoid_oper(input: Tokens) -> IResult<Tokens, Expression> {
     map(pair(isvoid_token, term), |(token, expr)| {
         let expr_data = ExpressionData::new_unary_operation(&token.kind, expr);
         let location = token.location;
@@ -184,7 +184,7 @@ fn isvoid_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
     })(input)
 }
 
-fn negative_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn negative_oper(input: Tokens) -> IResult<Tokens, Expression> {
     map(pair(negative_token, term), |(token, expr)| {
         let expr_data = ExpressionData::new_unary_operation(&token.kind, expr);
         let location = token.location;
@@ -192,47 +192,88 @@ fn negative_oper<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
     })(input)
 }
 
-fn method_call<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
-    let (_, self_location) = current_location(input)?;
-    // TODO: support chained method calls
+fn method_call(input: Tokens) -> IResult<Tokens, Expression> {
     map(
-        tuple((
-            opt(pair(term, dot_token)),
-            ident,
-            delimited(
-                open_parens_token,
-                separated_list0(comma_token, expression),
-                close_parens_token,
-            ),
-        )),
-        move |(expr, name, params)| {
-            let (object, location) = match expr {
-                Some((obj, dot)) => (obj, dot.location),
-                _ => (
+        tuple((callee, call, many0(chained_call))),
+        move |((loc, expr, static_type), (id, params), chained)| {
+            let base = Expression::new(
+                ExpressionData::new_method_call(expr, static_type, id, params),
+                loc,
+            );
+            chained.into_iter().fold(
+                base,
+                |acc, (loc, static_type, id, params)| {
                     Expression::new(
-                        ExpressionData::Object("self".to_string()),
-                        self_location,
-                    ),
-                    self_location,
-                ),
-            };
-            Expression::new(
-                ExpressionData::new_method_call(object, name, params),
-                location,
+                        ExpressionData::new_method_call(
+                            acc,
+                            static_type,
+                            id,
+                            params,
+                        ),
+                        loc,
+                    )
+                },
             )
         },
     )(input)
 }
 
-fn term<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn callee(
+    input: Tokens,
+) -> IResult<Tokens, (Span, Expression, Option<TypeId>)> {
+    let (_, location) = current_location(input)?;
+    map(
+        opt(tuple((term, opt(preceded(at_token, type_id)), dot_token))),
+        move |callee| {
+            callee
+                .map(|(expr, static_type, token)| {
+                    (token.location, expr, static_type)
+                })
+                .unwrap_or_else(|| {
+                    (
+                        location,
+                        Expression::new(
+                            ExpressionData::Object("self".to_string()),
+                            location,
+                        ),
+                        None,
+                    )
+                })
+        },
+    )(input)
+}
+
+fn call(input: Tokens) -> IResult<Tokens, (Ident, Vec<Expression>)> {
+    pair(
+        ident,
+        delimited(
+            open_parens_token,
+            separated_list0(comma_token, expression),
+            close_parens_token,
+        ),
+    )(input)
+}
+
+fn chained_call(
+    input: Tokens,
+) -> IResult<Tokens, (Span, Option<TypeId>, Ident, Vec<Expression>)> {
+    map(
+        tuple((opt(preceded(at_token, type_id)), dot_token, call)),
+        |(static_type, token, (ident, exprs))| {
+            (token.location, static_type, ident, exprs)
+        },
+    )(input)
+}
+
+fn term(input: Tokens) -> IResult<Tokens, Expression> {
     alt((parens_expression, object, literal))(input)
 }
 
-fn parens_expression<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn parens_expression(input: Tokens) -> IResult<Tokens, Expression> {
     delimited(open_parens_token, expression, close_parens_token)(input)
 }
 
-fn object<'a>(input: Tokens<'a>) -> IResult<Tokens, Expression<'a>> {
+fn object(input: Tokens) -> IResult<Tokens, Expression> {
     let (_, location) = current_location(input)?;
     map(ident, move |id| {
         Expression::new(ExpressionData::Object(id), location)

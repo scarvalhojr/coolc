@@ -17,7 +17,7 @@ impl<'a> ProgramFormatter<'a> {
     }
 }
 
-impl<'a> Display for ProgramFormatter<'a> {
+impl Display for ProgramFormatter<'_> {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         let line_number = self
             .program
@@ -49,7 +49,7 @@ impl<'a> ClassFormatter<'a> {
     }
 }
 
-impl<'a> Display for ClassFormatter<'a> {
+impl Display for ClassFormatter<'_> {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         let empty = "";
         let line_number = self.class.location.location_line();
@@ -86,7 +86,7 @@ impl<'a> FeatureFormatter<'a> {
     }
 }
 
-impl<'a> Display for FeatureFormatter<'a> {
+impl Display for FeatureFormatter<'_> {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         let empty = "";
         let indent = self.indent;
@@ -107,7 +107,7 @@ impl<'a> FeatureDataFormatter<'a> {
     }
 }
 
-impl<'a> Display for FeatureDataFormatter<'a> {
+impl Display for FeatureDataFormatter<'_> {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         let empty = "";
         let indent = self.indent;
@@ -166,7 +166,7 @@ impl<'a> FormalFormatter<'a> {
     }
 }
 
-impl<'a> Display for FormalFormatter<'a> {
+impl Display for FormalFormatter<'_> {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         let empty = "";
         let indent = self.indent;
@@ -196,7 +196,7 @@ impl<'a> ExpressionFormatter<'a> {
     }
 }
 
-impl<'a> Display for ExpressionFormatter<'a> {
+impl Display for ExpressionFormatter<'_> {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         let empty = "";
         let indent = self.indent;
@@ -217,7 +217,7 @@ impl<'a> ExpressionDataFormatter<'a> {
     }
 }
 
-impl<'a> Display for ExpressionDataFormatter<'a> {
+impl Display for ExpressionDataFormatter<'_> {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         let empty = "";
         let indent = self.indent;
@@ -280,16 +280,28 @@ impl<'a> Display for ExpressionDataFormatter<'a> {
                     {empty:indent$}: _no_type"
                 )
             }
-            MethodCall(object, ident, params) => {
+            MethodCall(object, static_type, ident, params) => {
                 let expression = object.format(next_indent);
-                writeln!(
-                    f,
-                    "\
-                    {empty:indent$}_dispatch\n\
-                    {expression}\
-                    {empty:next_indent$}{ident}\n\
-                    {empty:next_indent$}(",
-                )?;
+                if let Some(type_id) = static_type {
+                    writeln!(
+                        f,
+                        "\
+                        {empty:indent$}_static_dispatch\n\
+                        {expression}\
+                        {empty:next_indent$}{type_id}\n\
+                        {empty:next_indent$}{ident}\n\
+                        {empty:next_indent$}(",
+                    )?;
+                } else {
+                    writeln!(
+                        f,
+                        "\
+                        {empty:indent$}_dispatch\n\
+                        {expression}\
+                        {empty:next_indent$}{ident}\n\
+                        {empty:next_indent$}(",
+                    )?;
+                }
                 for param in params.iter() {
                     write!(f, "{}", param.format(next_indent))?;
                 }

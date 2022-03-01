@@ -231,6 +231,15 @@
 #21 OBJECTID obj4
 #21 ')'
 #21 ';'
+#22 OBJECTID l
+#22 '('
+#22 ')'
+#22 ':'
+#22 TYPEID L
+#22 '{'
+#22 OBJECTID l
+#22 '}'
+#22 ';'
 #23 OBJECTID m
 #23 '('
 #23 ')'
@@ -331,5 +340,100 @@
 #41 '('
 #41 ')'
 #41 ';'
-#42 '}'
-#42 ';'
+#42 OBJECTID u
+#42 ':'
+#42 TYPEID U
+#43 ASSIGN
+#44 OBJECTID o
+#45 '@'
+#46 TYPEID O
+#47 '.'
+#48 OBJECTID a
+#49 '('
+#50 INT_CONST 0
+#51 ')'
+#52 '.'
+#53 OBJECTID b
+#54 '('
+#55 BOOL_CONST true
+#55 ','
+#56 STR_CONST ""
+#57 ')'
+#58 '@'
+#59 TYPEID C
+#60 '.'
+#61 OBJECTID c
+#62 '('
+#63 OBJECTID a
+#63 ','
+#64 OBJECTID b
+#64 ','
+#65 INT_CONST 2
+#66 ')'
+#67 ';'
+#68 OBJECTID v
+#68 ':'
+#68 TYPEID V
+#68 ASSIGN
+#68 OBJECTID o
+#69 '@'
+#70 TYPEID O
+#71 '.'
+#72 OBJECTID a
+#73 '('
+#74 INT_CONST 1
+#74 ','
+#75 STR_CONST "param"
+#76 ')'
+#77 '@'
+#78 TYPEID B
+#79 '.'
+#80 OBJECTID b
+#81 '('
+#82 BOOL_CONST true
+#83 ')'
+#84 '.'
+#85 OBJECTID c
+#86 '('
+#87 OBJECTID self
+#88 '@'
+#89 TYPEID Object
+#90 '.'
+#91 OBJECTID p
+#92 '('
+#93 OBJECTID q
+#94 '('
+#95 BOOL_CONST false
+#96 ')'
+#97 '.'
+#98 OBJECTID r
+#99 '('
+#100 INT_CONST 2
+#101 ')'
+#103 ')'
+#104 ')'
+#104 ';'
+#105 OBJECTID w
+#105 ':'
+#105 TYPEID W
+#105 ASSIGN
+#105 OBJECTID self
+#105 '@'
+#105 TYPEID Object
+#105 '.'
+#105 OBJECTID a
+#105 '('
+#105 ')'
+#105 '@'
+#105 TYPEID A
+#105 '.'
+#105 OBJECTID b
+#105 '('
+#105 ')'
+#105 '.'
+#105 OBJECTID c
+#105 '('
+#105 ')'
+#105 ';'
+#106 '}'
+#106 ';'

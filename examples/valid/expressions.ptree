@@ -486,6 +486,14 @@ _program
           : _no_type
         : _no_type
       : _no_type
+    #22
+    _method
+      l
+      L
+      #22
+      _object
+        l
+      : _no_type
     #23
     _method
       m
@@ -626,6 +634,161 @@ _program
           : _no_type
         : _no_type
         m
+        (
+        )
+      : _no_type
+    #42
+    _attr
+      u
+      U
+      #60
+      _static_dispatch
+        #52
+        _dispatch
+          #47
+          _static_dispatch
+            #44
+            _object
+              o
+            : _no_type
+            O
+            a
+            (
+            #50
+            _int
+              0
+            : _no_type
+            )
+          : _no_type
+          b
+          (
+          #55
+          _bool
+            1
+          : _no_type
+          #56
+          _string
+            ""
+          : _no_type
+          )
+        : _no_type
+        C
+        c
+        (
+        #63
+        _object
+          a
+        : _no_type
+        #64
+        _object
+          b
+        : _no_type
+        #65
+        _int
+          2
+        : _no_type
+        )
+      : _no_type
+    #68
+    _attr
+      v
+      V
+      #84
+      _dispatch
+        #79
+        _static_dispatch
+          #71
+          _static_dispatch
+            #68
+            _object
+              o
+            : _no_type
+            O
+            a
+            (
+            #74
+            _int
+              1
+            : _no_type
+            #75
+            _string
+              "param"
+            : _no_type
+            )
+          : _no_type
+          B
+          b
+          (
+          #82
+          _bool
+            1
+          : _no_type
+          )
+        : _no_type
+        c
+        (
+        #90
+        _static_dispatch
+          #87
+          _object
+            self
+          : _no_type
+          Object
+          p
+          (
+          #97
+          _dispatch
+            #93
+            _dispatch
+              #93
+              _object
+                self
+              : _no_type
+              q
+              (
+              #95
+              _bool
+                0
+              : _no_type
+              )
+            : _no_type
+            r
+            (
+            #100
+            _int
+              2
+            : _no_type
+            )
+          : _no_type
+          )
+        : _no_type
+        )
+      : _no_type
+    #105
+    _attr
+      w
+      W
+      #105
+      _dispatch
+        #105
+        _static_dispatch
+          #105
+          _static_dispatch
+            #105
+            _object
+              self
+            : _no_type
+            Object
+            a
+            (
+            )
+          : _no_type
+          A
+          b
+          (
+          )
+        : _no_type
+        c
         (
         )
       : _no_type

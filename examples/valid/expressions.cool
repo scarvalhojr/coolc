@@ -19,7 +19,7 @@ class A {
                             obj3
                                 <-
                                     obj4);
-    -- l: Bool <- isvoid obj1 <- obj2 <- obj3 <- obj4;  -- what is the correct parse here?
+    l(): L { l };
     m(): Bool { true };
     n(a: Int): Int { 0 };
     o(a: A, b: B, c: C): D { 1 + 2 };
@@ -39,4 +39,68 @@ class A {
         ;
     s: S <- 1 + 2 . m();
     t: S <- (1 + 2). m();
+    u: U
+        <-
+        o
+        @
+        O
+        .
+        a
+        (
+            0
+        )
+        .
+        b
+        (
+            true,
+            ""
+        )
+        @
+        C
+        .
+        c
+        (
+            a,
+            b,
+            2
+        )
+        ;
+    v: V <- o
+        @
+        O
+        .
+        a
+        (
+            1,
+            "param"
+        )
+        @
+        B
+        .
+        b
+        (
+            true
+        )
+        .
+        c
+        (
+            self
+            @
+            Object
+            .
+            p
+            (
+                q
+                (
+                    false
+                )
+                .
+                r
+                (
+                    2
+                )
+
+            )
+        );
+    w: W <- self@Object.a()@A.b().c();
 };
