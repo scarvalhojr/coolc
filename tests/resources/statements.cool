@@ -1,0 +1,52 @@
+class A {
+    a(): Int { { 0; 1; } };
+    b(): Int { if true then 1 else 0 fi };
+    c(): Int {
+        if 1 = 2 then
+            if 2 < 3 then
+                4 + 5
+            else
+                6 * 7
+            fi
+        else
+            if 8 = 9 then
+                10 / 11
+            else
+                12
+            fi
+        fi
+    };
+    d(): Int {
+        while a < 20 loop
+            while a < 10 loop
+                a = a + 1
+            pool
+        pool
+    };
+    e(): A { new A };
+    f(): String {
+        case e() of
+            a: A => "A";
+            b: B => "B";
+            c: C => "C";
+            o: Object => "Object";
+        esac
+    };
+    g(): Int {
+        case f() of
+            i: Int => case
+                e() of
+                    a: A => 0;
+                    o: Object => 10;
+                esac;
+            o: String => 1;
+            x: Object => 2;
+        esac
+    };
+    h(): H {
+        let
+            a: A <- new A,
+            b: B in
+            b <- a.m()
+    };
+};

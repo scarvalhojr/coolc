@@ -1,0 +1,223 @@
+#name "statements.cool"
+#1 CLASS
+#1 TYPEID A
+#1 '{'
+#2 OBJECTID a
+#2 '('
+#2 ')'
+#2 ':'
+#2 TYPEID Int
+#2 '{'
+#2 '{'
+#2 INT_CONST 0
+#2 ';'
+#2 INT_CONST 1
+#2 ';'
+#2 '}'
+#2 '}'
+#2 ';'
+#3 OBJECTID b
+#3 '('
+#3 ')'
+#3 ':'
+#3 TYPEID Int
+#3 '{'
+#3 IF
+#3 BOOL_CONST true
+#3 THEN
+#3 INT_CONST 1
+#3 ELSE
+#3 INT_CONST 0
+#3 FI
+#3 '}'
+#3 ';'
+#4 OBJECTID c
+#4 '('
+#4 ')'
+#4 ':'
+#4 TYPEID Int
+#4 '{'
+#5 IF
+#5 INT_CONST 1
+#5 '='
+#5 INT_CONST 2
+#5 THEN
+#6 IF
+#6 INT_CONST 2
+#6 '<'
+#6 INT_CONST 3
+#6 THEN
+#7 INT_CONST 4
+#7 '+'
+#7 INT_CONST 5
+#8 ELSE
+#9 INT_CONST 6
+#9 '*'
+#9 INT_CONST 7
+#10 FI
+#11 ELSE
+#12 IF
+#12 INT_CONST 8
+#12 '='
+#12 INT_CONST 9
+#12 THEN
+#13 INT_CONST 10
+#13 '/'
+#13 INT_CONST 11
+#14 ELSE
+#15 INT_CONST 12
+#16 FI
+#17 FI
+#18 '}'
+#18 ';'
+#19 OBJECTID d
+#19 '('
+#19 ')'
+#19 ':'
+#19 TYPEID Int
+#19 '{'
+#20 WHILE
+#20 OBJECTID a
+#20 '<'
+#20 INT_CONST 20
+#20 LOOP
+#21 WHILE
+#21 OBJECTID a
+#21 '<'
+#21 INT_CONST 10
+#21 LOOP
+#22 OBJECTID a
+#22 '='
+#22 OBJECTID a
+#22 '+'
+#22 INT_CONST 1
+#23 POOL
+#24 POOL
+#25 '}'
+#25 ';'
+#26 OBJECTID e
+#26 '('
+#26 ')'
+#26 ':'
+#26 TYPEID A
+#26 '{'
+#26 NEW
+#26 TYPEID A
+#26 '}'
+#26 ';'
+#27 OBJECTID f
+#27 '('
+#27 ')'
+#27 ':'
+#27 TYPEID String
+#27 '{'
+#28 CASE
+#28 OBJECTID e
+#28 '('
+#28 ')'
+#28 OF
+#29 OBJECTID a
+#29 ':'
+#29 TYPEID A
+#29 DARROW
+#29 STR_CONST "A"
+#29 ';'
+#30 OBJECTID b
+#30 ':'
+#30 TYPEID B
+#30 DARROW
+#30 STR_CONST "B"
+#30 ';'
+#31 OBJECTID c
+#31 ':'
+#31 TYPEID C
+#31 DARROW
+#31 STR_CONST "C"
+#31 ';'
+#32 OBJECTID o
+#32 ':'
+#32 TYPEID Object
+#32 DARROW
+#32 STR_CONST "Object"
+#32 ';'
+#33 ESAC
+#34 '}'
+#34 ';'
+#35 OBJECTID g
+#35 '('
+#35 ')'
+#35 ':'
+#35 TYPEID Int
+#35 '{'
+#36 CASE
+#36 OBJECTID f
+#36 '('
+#36 ')'
+#36 OF
+#37 OBJECTID i
+#37 ':'
+#37 TYPEID Int
+#37 DARROW
+#37 CASE
+#38 OBJECTID e
+#38 '('
+#38 ')'
+#38 OF
+#39 OBJECTID a
+#39 ':'
+#39 TYPEID A
+#39 DARROW
+#39 INT_CONST 0
+#39 ';'
+#40 OBJECTID o
+#40 ':'
+#40 TYPEID Object
+#40 DARROW
+#40 INT_CONST 10
+#40 ';'
+#41 ESAC
+#41 ';'
+#42 OBJECTID o
+#42 ':'
+#42 TYPEID String
+#42 DARROW
+#42 INT_CONST 1
+#42 ';'
+#43 OBJECTID x
+#43 ':'
+#43 TYPEID Object
+#43 DARROW
+#43 INT_CONST 2
+#43 ';'
+#44 ESAC
+#45 '}'
+#45 ';'
+#46 OBJECTID h
+#46 '('
+#46 ')'
+#46 ':'
+#46 TYPEID H
+#46 '{'
+#47 LET
+#48 OBJECTID a
+#48 ':'
+#48 TYPEID A
+#48 ASSIGN
+#48 NEW
+#48 TYPEID A
+#48 ','
+#49 OBJECTID b
+#49 ':'
+#49 TYPEID B
+#49 IN
+#50 OBJECTID b
+#50 ASSIGN
+#50 OBJECTID a
+#50 '.'
+#50 OBJECTID m
+#50 '('
+#50 ')'
+#51 '}'
+#51 ';'
+#52 '}'
+#52 ';'

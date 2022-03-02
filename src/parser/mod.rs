@@ -6,7 +6,7 @@ use crate::tokens::{Ident, Span, Token, TokenKind, Tokens, TypeId};
 use nom::branch::alt;
 use nom::bytes::complete::take;
 use nom::combinator::{eof, map, map_res, opt, peek};
-use nom::multi::{many0, many1, separated_list0};
+use nom::multi::{many0, many1, separated_list0, separated_list1};
 use nom::sequence::{
     delimited, pair, preceded, separated_pair, terminated, tuple,
 };
@@ -102,7 +102,126 @@ fn formal(input: Tokens) -> IResult<Tokens, Formal> {
 // dot
 
 fn expression(input: Tokens) -> IResult<Tokens, Expression> {
-    alt((assign, bool_not_oper, comparison_oper))(input)
+    alt((
+        expression_block,
+        conditional_expression,
+        loop_expression,
+        case_expression,
+        let_expression,
+        new_object,
+        assign,
+        bool_not_oper,
+        comparison_oper,
+    ))(input)
+}
+
+fn expression_block(input: Tokens) -> IResult<Tokens, Expression> {
+    let (_, location) = current_location(input)?;
+    map(
+        delimited(
+            open_braces_token,
+            many1(terminated(expression, semicolon_token)),
+            close_braces_token,
+        ),
+        move |expressions| {
+            Expression::new(ExpressionData::Block(expressions), location)
+        },
+    )(input)
+}
+
+fn conditional_expression(input: Tokens) -> IResult<Tokens, Expression> {
+    let (_, location) = current_location(input)?;
+    map(
+        tuple((
+            preceded(if_token, expression),
+            preceded(then_token, expression),
+            delimited(else_token, expression, fi_token),
+        )),
+        move |(if_expr, then_expr, else_expr)| {
+            Expression::new(
+                ExpressionData::new_conditional(if_expr, then_expr, else_expr),
+                location,
+            )
+        },
+    )(input)
+}
+
+fn loop_expression(input: Tokens) -> IResult<Tokens, Expression> {
+    let (_, location) = current_location(input)?;
+    map(
+        pair(
+            preceded(while_token, expression),
+            delimited(loop_token, expression, pool_token),
+        ),
+        move |(cond_expr, loop_expr)| {
+            Expression::new(
+                ExpressionData::new_loop(cond_expr, loop_expr),
+                location,
+            )
+        },
+    )(input)
+}
+
+fn case_expression(input: Tokens) -> IResult<Tokens, Expression> {
+    let (_, location) = current_location(input)?;
+    map(
+        pair(
+            preceded(case_token, expression),
+            delimited(of_token, many1(case_branch), esac_token),
+        ),
+        move |(case_expr, branches)| {
+            Expression::new(
+                ExpressionData::new_case(case_expr, branches),
+                location,
+            )
+        },
+    )(input)
+}
+
+fn case_branch(input: Tokens) -> IResult<Tokens, CaseBranch> {
+    let (_, location) = current_location(input)?;
+    map(
+        tuple((
+            terminated(ident, colon_token),
+            terminated(type_id, double_arrow_token),
+            terminated(expression, semicolon_token),
+        )),
+        move |(id, type_id, expr)| CaseBranch::new(id, type_id, expr, location),
+    )(input)
+}
+
+fn let_expression(input: Tokens) -> IResult<Tokens, Expression> {
+    map(
+        pair(
+            preceded(let_token, separated_list1(comma_token, let_binding)),
+            preceded(in_token, expression),
+        ),
+        move |(bindings, expression)| {
+            bindings.into_iter().rev().fold(
+                expression,
+                |acc, (ident, type_id, opt_bind, location)| {
+                    Expression::new(
+                        ExpressionData::new_let(ident, type_id, opt_bind, acc),
+                        location,
+                    )
+                },
+            )
+        },
+    )(input)
+}
+
+fn let_binding(
+    input: Tokens,
+) -> IResult<Tokens, (Ident, TypeId, Option<Expression>, Span)> {
+    let (_, location) = current_location(input)?;
+    map(
+        tuple((
+            terminated(ident, colon_token),
+            type_id,
+            opt(preceded(assign_token, expression)),
+        )),
+        move |(ident, type_id, opt_expr)| (ident, type_id, opt_expr, location),
+    )(input)
 }
 
 fn assign(input: Tokens) -> IResult<Tokens, Expression> {
@@ -113,6 +232,13 @@ fn assign(input: Tokens) -> IResult<Tokens, Expression> {
             Expression::new(ExpressionData::new_assign(id, expr), location)
         },
     )(input)
+}
+
+fn new_object(input: Tokens) -> IResult<Tokens, Expression> {
+    let (_, location) = current_location(input)?;
+    map(preceded(new_token, type_id), move |id| {
+        Expression::new(ExpressionData::New(id), location)
+    })(input)
 }
 
 fn bool_not_oper(input: Tokens) -> IResult<Tokens, Expression> {

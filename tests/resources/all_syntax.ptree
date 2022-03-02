@@ -1,0 +1,436 @@
+#7
+_program
+  #7
+  _class
+    Foo
+    Object
+    "all_syntax.cool"
+    (
+    #9
+    _attr
+      int_value
+      Int
+      #9
+      _int
+        0
+      : _no_type
+    #10
+    _attr
+      bool_value
+      Bool
+      #10
+      _bool
+        1
+      : _no_type
+    #11
+    _attr
+      false_value
+      Bool
+      #11
+      _bool
+        0
+      : _no_type
+    #12
+    _attr
+      str_value
+      String
+      #12
+      _string
+        "[\t] [\b] [\\] [0] [|] [\n]"
+      : _no_type
+    #14
+    _method
+      init
+      #14
+      _formal
+        int_val
+        Int
+      #14
+      _formal
+        bool_val
+        Bool
+      SELF_TYPE
+      #15
+      _block
+        #16
+        _assign
+          int_value
+          #16
+          _sub
+            #16
+            _plus
+              #16
+              _int
+                0
+              : _no_type
+              #16
+              _mul
+                #16
+                _divide
+                  #16
+                  _object
+                    int_val
+                  : _no_type
+                  #16
+                  _int
+                    1
+                  : _no_type
+                : _no_type
+                #16
+                _neg
+                  #16
+                  _int
+                    1
+                  : _no_type
+                : _no_type
+              : _no_type
+            : _no_type
+            #16
+            _int
+              0
+            : _no_type
+          : _no_type
+        : _no_type
+        #17
+        _assign
+          bool_value
+          #17
+          _object
+            bool_val
+          : _no_type
+        : _no_type
+        #18
+        _assign
+          false_value
+          #18
+          _isvoid
+            #18
+            _object
+              self
+            : _no_type
+          : _no_type
+        : _no_type
+        #19
+        _object
+          self
+        : _no_type
+      : _no_type
+    #22
+    _method
+      int_value
+      Int
+      #23
+      _object
+        int_value
+      : _no_type
+    #25
+    _method
+      bool_value
+      Bool
+      #26
+      _object
+        bool_value
+      : _no_type
+    #28
+    _method
+      false_value
+      Bool
+      #29
+      _object
+        false_value
+      : _no_type
+    #31
+    _method
+      str_value
+      String
+      #32
+      _object
+        str_value
+      : _no_type
+    )
+  #36
+  _class
+    Bar
+    Foo
+    "all_syntax.cool"
+    (
+    #37
+    _method
+      false_value
+      Bool
+      #38
+      _bool
+        0
+      : _no_type
+    )
+  #42
+  _class
+    Main
+    IO
+    "all_syntax.cool"
+    (
+    #43
+    _attr
+      foo
+      Foo
+      #43
+      _dispatch
+        #43
+        _new
+          Foo
+        : _no_type
+        init
+        (
+        #43
+        _int
+          42
+        : _no_type
+        #43
+        _comp
+          #43
+          _leq
+            #43
+            _int
+              1
+            : _no_type
+            #43
+            _int
+              0
+            : _no_type
+          : _no_type
+        : _no_type
+        )
+      : _no_type
+    #44
+    _method
+      main
+      Int
+      #45
+      _block
+        #46
+        _typcase
+          #46
+          _object
+            foo
+          : _no_type
+          #47
+          _branch
+            f
+            Foo
+            #47
+            _dispatch
+              #47
+              _object
+                self
+              : _no_type
+              out_string
+              (
+              #47
+              _string
+                "foo is a Foo\n"
+              : _no_type
+              )
+            : _no_type
+          #48
+          _branch
+            o
+            Object
+            #48
+            _dispatch
+              #48
+              _object
+                self
+              : _no_type
+              out_string
+              (
+              #48
+              _string
+                "foo is an Object\n"
+              : _no_type
+              )
+            : _no_type
+        : _no_type
+        #51
+        _let
+          continue
+          Bool
+          #51
+          _dispatch
+            #51
+            _object
+              foo
+            : _no_type
+            bool_value
+            (
+            )
+          : _no_type
+          #51
+          _block
+            #52
+            _loop
+              #52
+              _object
+                continue
+              : _no_type
+              #52
+              _block
+                #53
+                _dispatch
+                  #53
+                  _object
+                    self
+                  : _no_type
+                  out_string
+                  (
+                  #53
+                  _string
+                    "Looping...\n"
+                  : _no_type
+                  )
+                : _no_type
+                #54
+                _assign
+                  continue
+                  #54
+                  _static_dispatch
+                    #54
+                    _new
+                      Bar
+                    : _no_type
+                    Foo
+                    false_value
+                    (
+                    )
+                  : _no_type
+                : _no_type
+              : _no_type
+            : _no_type
+          : _no_type
+        : _no_type
+        #59
+        _cond
+          #59
+          _eq
+            #59
+            _dispatch
+              #59
+              _object
+                foo
+              : _no_type
+              int_value
+              (
+              )
+            : _no_type
+            #59
+            _int
+              0
+            : _no_type
+          : _no_type
+          #59
+          _block
+            #60
+            _dispatch
+              #60
+              _object
+                self
+              : _no_type
+              out_string
+              (
+              #60
+              _string
+                "int_value is zero\n"
+              : _no_type
+              )
+            : _no_type
+          : _no_type
+          #61
+          _cond
+            #61
+            _lt
+              #61
+              _dispatch
+                #61
+                _object
+                  foo
+                : _no_type
+                int_value
+                (
+                )
+              : _no_type
+              #61
+              _int
+                0
+              : _no_type
+            : _no_type
+            #61
+            _block
+              #62
+              _dispatch
+                #62
+                _object
+                  self
+                : _no_type
+                out_string
+                (
+                #62
+                _string
+                  "int_value is negative\n"
+                : _no_type
+                )
+              : _no_type
+            : _no_type
+            #63
+            _block
+              #64
+              _dispatch
+                #64
+                _object
+                  self
+                : _no_type
+                out_string
+                (
+                #64
+                _string
+                  "int_value is positive\n"
+                : _no_type
+                )
+              : _no_type
+            : _no_type
+          : _no_type
+        : _no_type
+        #67
+        _dispatch
+          #67
+          _object
+            self
+          : _no_type
+          out_string
+          (
+          #67
+          _dispatch
+            #67
+            _string
+              "str_value: "
+            : _no_type
+            concat
+            (
+            #67
+            _dispatch
+              #67
+              _object
+                foo
+              : _no_type
+              str_value
+              (
+              )
+            : _no_type
+            )
+          : _no_type
+          )
+        : _no_type
+        #68
+        _int
+          0
+        : _no_type
+      : _no_type
+    )

@@ -118,6 +118,21 @@ impl<'a> Expression<'a> {
 
 #[derive(Debug, PartialEq)]
 pub enum ExpressionData<'a> {
+    Block(Vec<Expression<'a>>),
+    Conditional(
+        Box<Expression<'a>>,
+        Box<Expression<'a>>,
+        Box<Expression<'a>>,
+    ),
+    Loop(Box<Expression<'a>>, Box<Expression<'a>>),
+    Case(Box<Expression<'a>>, Vec<CaseBranch<'a>>),
+    Let(
+        Ident,
+        TypeId,
+        Box<Option<Expression<'a>>>,
+        Box<Expression<'a>>,
+    ),
+    New(TypeId),
     Assign(Ident, Box<Expression<'a>>),
     UnaryOperation(UnaryOperator, Box<Expression<'a>>),
     BinaryOperation(BinaryOperator, Box<Expression<'a>>, Box<Expression<'a>>),
@@ -152,6 +167,37 @@ pub enum BinaryOperator {
 }
 
 impl<'a> ExpressionData<'a> {
+    pub fn new_conditional(
+        if_expr: Expression<'a>,
+        then_expr: Expression<'a>,
+        else_expr: Expression<'a>,
+    ) -> Self {
+        Conditional(Box::new(if_expr), Box::new(then_expr), Box::new(else_expr))
+    }
+
+    pub fn new_loop(
+        cond_expr: Expression<'a>,
+        loop_expr: Expression<'a>,
+    ) -> Self {
+        Loop(Box::new(cond_expr), Box::new(loop_expr))
+    }
+
+    pub fn new_case(
+        case_expr: Expression<'a>,
+        branches: Vec<CaseBranch<'a>>,
+    ) -> Self {
+        Case(Box::new(case_expr), branches)
+    }
+
+    pub fn new_let(
+        ident: Ident,
+        type_id: TypeId,
+        bind_expr: Option<Expression<'a>>,
+        expression: Expression<'a>,
+    ) -> Self {
+        Let(ident, type_id, Box::new(bind_expr), Box::new(expression))
+    }
+
     pub fn new_assign(ident: Ident, expression: Expression<'a>) -> Self {
         Assign(ident, Box::new(expression))
     }
@@ -198,5 +244,33 @@ impl<'a> ExpressionData<'a> {
 
     pub fn format(&self, indent: usize) -> ExpressionDataFormatter {
         ExpressionDataFormatter::new(self, indent)
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct CaseBranch<'a> {
+    pub ident: Ident,
+    pub type_id: TypeId,
+    pub expression: Expression<'a>,
+    pub location: Span<'a>,
+}
+
+impl<'a> CaseBranch<'a> {
+    pub fn new(
+        ident: Ident,
+        type_id: TypeId,
+        expression: Expression<'a>,
+        location: Span<'a>,
+    ) -> Self {
+        Self {
+            ident,
+            type_id,
+            expression,
+            location,
+        }
+    }
+
+    pub fn format(&self, indent: usize) -> CaseBranchFormatter {
+        CaseBranchFormatter::new(self, indent)
     }
 }
