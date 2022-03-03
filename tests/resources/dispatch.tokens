@@ -1,0 +1,60 @@
+#name "dispatch.cool"
+#1 CLASS
+#1 TYPEID A
+#1 '{'
+#2 OBJECTID o1
+#2 ':'
+#2 TYPEID O
+#2 ASSIGN
+#2 '{'
+#2 NEW
+#2 TYPEID A
+#2 ';'
+#2 '}'
+#2 '.'
+#2 OBJECTID m
+#2 '('
+#2 ')'
+#2 ';'
+#3 OBJECTID o2
+#3 ':'
+#3 TYPEID O
+#3 ASSIGN
+#3 NEW
+#3 TYPEID A
+#3 '.'
+#3 OBJECTID m
+#3 '('
+#3 ')'
+#3 ';'
+#4 OBJECTID o3
+#4 ':'
+#4 TYPEID O
+#4 ASSIGN
+#4 '('
+#4 INT_CONST 1
+#4 '+'
+#4 INT_CONST 2
+#4 ')'
+#4 '.'
+#4 OBJECTID m
+#4 '('
+#4 ')'
+#4 ';'
+#5 OBJECTID o4
+#5 ':'
+#5 TYPEID O
+#5 ASSIGN
+#5 '{'
+#5 INT_CONST 1
+#5 ';'
+#5 INT_CONST 2
+#5 ';'
+#5 '}'
+#5 '.'
+#5 OBJECTID m
+#5 '('
+#5 ')'
+#5 ';'
+#6 '}'
+#6 ';'

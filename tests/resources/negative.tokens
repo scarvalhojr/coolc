@@ -1,0 +1,18 @@
+#name "negative.cool"
+#1 CLASS
+#1 TYPEID A
+#1 '{'
+#2 OBJECTID a
+#2 '('
+#2 ')'
+#2 ':'
+#2 TYPEID Int
+#2 '{'
+#2 '~'
+#2 OBJECTID m
+#2 '('
+#2 ')'
+#2 '}'
+#2 ';'
+#3 '}'
+#3 ';'

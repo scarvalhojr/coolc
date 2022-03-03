@@ -1,0 +1,145 @@
+#name "primes.cool"
+#27 CLASS
+#27 TYPEID Main
+#27 INHERITS
+#27 TYPEID IO
+#27 '{'
+#29 OBJECTID main
+#29 '('
+#29 ')'
+#29 ':'
+#29 TYPEID Int
+#29 '{'
+#30 INT_CONST 0
+#31 '}'
+#31 ';'
+#33 OBJECTID out
+#33 ':'
+#33 TYPEID Int
+#33 ASSIGN
+#34 '{'
+#35 OBJECTID out_string
+#35 '('
+#35 STR_CONST "2 is trivially prime.\n"
+#35 ')'
+#35 ';'
+#36 INT_CONST 2
+#36 ';'
+#37 '}'
+#37 ';'
+#39 OBJECTID testee
+#39 ':'
+#39 TYPEID Int
+#39 ASSIGN
+#39 OBJECTID out
+#39 ';'
+#41 OBJECTID divisor
+#41 ':'
+#41 TYPEID Int
+#41 ';'
+#43 OBJECTID stop
+#43 ':'
+#43 TYPEID Int
+#43 ASSIGN
+#43 INT_CONST 500
+#43 ';'
+#45 OBJECTID m
+#45 ':'
+#45 TYPEID Object
+#45 ASSIGN
+#46 WHILE
+#46 BOOL_CONST true
+#46 LOOP
+#47 '{'
+#49 OBJECTID testee
+#49 ASSIGN
+#49 OBJECTID testee
+#49 '+'
+#49 INT_CONST 1
+#49 ';'
+#50 OBJECTID divisor
+#50 ASSIGN
+#50 INT_CONST 2
+#50 ';'
+#52 WHILE
+#53 IF
+#53 OBJECTID testee
+#53 '<'
+#53 OBJECTID divisor
+#53 '*'
+#53 OBJECTID divisor
+#54 THEN
+#54 BOOL_CONST false
+#55 ELSE
+#55 IF
+#55 OBJECTID testee
+#55 '-'
+#55 OBJECTID divisor
+#55 '*'
+#55 '('
+#55 OBJECTID testee
+#55 '/'
+#55 OBJECTID divisor
+#55 ')'
+#55 '='
+#55 INT_CONST 0
+#56 THEN
+#56 BOOL_CONST false
+#57 ELSE
+#57 BOOL_CONST true
+#58 FI
+#58 FI
+#59 LOOP
+#60 OBJECTID divisor
+#60 ASSIGN
+#60 OBJECTID divisor
+#60 '+'
+#60 INT_CONST 1
+#61 POOL
+#61 ';'
+#63 IF
+#63 OBJECTID testee
+#63 '<'
+#63 OBJECTID divisor
+#63 '*'
+#63 OBJECTID divisor
+#64 THEN
+#65 '{'
+#66 OBJECTID out
+#66 ASSIGN
+#66 OBJECTID testee
+#66 ';'
+#67 OBJECTID out_int
+#67 '('
+#67 OBJECTID out
+#67 ')'
+#67 ';'
+#68 OBJECTID out_string
+#68 '('
+#68 STR_CONST " is prime.\n"
+#68 ')'
+#68 ';'
+#69 '}'
+#70 ELSE
+#71 INT_CONST 0
+#72 FI
+#72 ';'
+#74 IF
+#74 OBJECTID stop
+#74 LE
+#74 OBJECTID testee
+#74 THEN
+#75 STR_CONST "halt"
+#75 '.'
+#75 OBJECTID abort
+#75 '('
+#75 ')'
+#76 ELSE
+#77 STR_CONST "continue"
+#78 FI
+#78 ';'
+#80 '}'
+#81 POOL
+#81 ';'
+#83 '}'
+#83 ';'

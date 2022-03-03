@@ -1,0 +1,82 @@
+#1
+_program
+  #1
+  _class
+    A
+    Object
+    "dispatch.cool"
+    (
+    #2
+    _attr
+      o1
+      O
+      #2
+      _dispatch
+        #2
+        _block
+          #2
+          _new
+            A
+          : _no_type
+        : _no_type
+        m
+        (
+        )
+      : _no_type
+    #3
+    _attr
+      o2
+      O
+      #3
+      _dispatch
+        #3
+        _new
+          A
+        : _no_type
+        m
+        (
+        )
+      : _no_type
+    #4
+    _attr
+      o3
+      O
+      #4
+      _dispatch
+        #4
+        _plus
+          #4
+          _int
+            1
+          : _no_type
+          #4
+          _int
+            2
+          : _no_type
+        : _no_type
+        m
+        (
+        )
+      : _no_type
+    #5
+    _attr
+      o4
+      O
+      #5
+      _dispatch
+        #5
+        _block
+          #5
+          _int
+            1
+          : _no_type
+          #5
+          _int
+            2
+          : _no_type
+        : _no_type
+        m
+        (
+        )
+      : _no_type
+    )

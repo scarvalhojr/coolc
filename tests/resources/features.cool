@@ -1,0 +1,96 @@
+class A {
+};
+
+class B inherits IO {
+    (* a bunch of grammatically valid attribute declarations and methods that
+     * would fail type checking *)
+    foo: Bool;
+    bar1: Int <- 0;
+    bar2: Bool <- true;
+    s: String <- "foo bar";
+    recurseive: Bool <- foo;
+    bad_type: Bool <- 1;
+    bad_type2: Int <- false;
+    paren: Int <- (0);
+    not_int: Int <- not 0;
+    not_bool: Bool <- not true;
+    int_eq: Bool <- 0 = 1;
+    double_eq: Bool <- (0 = 0) = true;
+    le: String <- true < 0;
+    double_le: Bool <- (0 <= 0) <= 1;
+    leq: String <- 1 <= "2";
+    neg: Bool <- ~ "0";
+    add: String <- true + 4;
+    sub: Bool <- "1" - 1;
+    mul: Int <- true * 2;
+    div: Bool <- true / 0;
+    is_void: Int <- isvoid "void";
+    new_: Bool <- new Obj;
+    if_then_else: Bool <- if 1 = "1" then 0 else "no" fi;
+    double_if: String <- if 1 = 2 then if true then 0 else false fi else "if" fi;
+    while_loop: Bool <- while 1 = 0 loop 0 pool;
+    loop_if: String <- while 0 <= x loop if true then x <- 0 else "" fi pool;
+    if_loop: MyClass <- if "true" then if while false loop 0 pool then "0" else object fi else isvoid 0 fi;
+    assign: Int <- foo <- bar;
+    expr: Int <- 3 * 2 + 5 / 4 + 3 - 8;
+    assign_assign: Int <- some <- other <- 5;
+    not_not: Bool <- not not true;
+    neg_expr: Int <- ~ 5 + 4;
+    mixed_up: Bool <- not 6 <= 2 + 3 - 1 * 6 / ~ 2;
+    minimal_expr_block: Bool <- { true; };
+    simple_expr_block: Int <- { false; 0; };
+    multi_expr_block: String <- { b <- isvoid x; val <- 2 + 5; if b then "void" else "not void" fi; };
+    minimal_let_expr: Bool <- let x: Bool in x;
+    minimal_let_expr_with_assign: Bool <- let x: Bool <- true in x;
+    let_expr_two_bindings: Bool <- let x: Int <- 1, y: Int <- 2 in x < 2;
+    multi_let_expr: String <- let a: Int, b: Int <- a + 1 * 2, c: Bool <- let d: Bool <- 0 < b in d in c;
+    minimal_case: Object <- case new Object of obj: Object => obj; esac;
+    two_case: Int <- case 0 of b: Bool => "bool"; i: Int => "int"; esac;
+    multi_case: Object <- case "" of a: A => 0; b: B => case b of c: C => a; d: D => b; esac; e: E => a + b * c; esac;
+    case_if_let_loop_case_case_let: Int <- case if let a: Int <- true, b: Object <- while a = 0 loop case b of o: Object => case o of s: String => let x: Int <- true in s; esac; esac pool in a + b then "ok" else false fi of a: A => a; b: B => b; esac;
+    method_no_formals(): Int { true };
+    method_no_formals_case_if_let_expr(): Int { case if let a: A <- aa, b: B <- bb in a + b then a else b fi of xa: A => xa; xb: B => xb; esac };
+    method_single_param(a: A): Bool { true };
+    method_double_param(a: A, b: B): Bool { true };
+    method_multi_param(a: A, b: B, c: C, d: D, e: E, f: F, g: G): Bool { true };
+    method_call_no_param: Bool <- obj.method();
+    method_call_single_param: Bool <- obj.method(0);
+    method_call_multi_param: Bool <- obj.method(a, 0, true, "", if a then 0 else true fi);
+    static_method_call: Int <- obj@Object.method();
+    static_method_call_with_params: Int <- obj@Object.method(a, b, c, 1, 2, 3);
+    static_method_call_with_params: Int <- a@A.m1(b)@B.m2(c, d).m3(e, f, g)@H.m4();
+    multi_line_expressions: Object <- {
+        a <- 0;
+        b <- a
+            +
+            1;
+        c <- b
+            -
+            0;
+        d <- c
+            *
+            1;
+        e <- d
+            /
+            1;
+        f <- ~
+            e;
+        g <- f
+            <
+            0;
+        h <- g
+            <=
+            0;
+        i <- not
+            h;
+        j <- (
+            i + 1
+        );
+        b * 2;
+    }
+        @
+        Object
+        .
+        method
+        (1, true, "");
+};

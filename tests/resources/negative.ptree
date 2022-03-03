@@ -1,0 +1,26 @@
+#1
+_program
+  #1
+  _class
+    A
+    Object
+    "negative.cool"
+    (
+    #2
+    _method
+      a
+      Int
+      #2
+      _neg
+        #2
+        _dispatch
+          #2
+          _object
+            self
+          : _no_type
+          m
+          (
+          )
+        : _no_type
+      : _no_type
+    )
