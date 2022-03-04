@@ -1,0 +1,34 @@
+#name "ifexpressionblock.cool"
+#1 CLASS
+#1 TYPEID Test
+#1 '{'
+#2 OBJECTID foo
+#2 ':'
+#2 TYPEID Test
+#2 ';'
+#3 OBJECTID bar
+#3 '('
+#3 ')'
+#3 ':'
+#3 TYPEID Int
+#3 '{'
+#3 IF
+#3 OBJECTID x
+#3 '='
+#3 INT_CONST 3
+#3 THEN
+#3 '{'
+#3 INT_CONST 1
+#3 ';'
+#3 INT_CONST 2
+#3 ';'
+#3 BOOL_CONST true
+#3 ';'
+#3 '}'
+#3 ELSE
+#3 BOOL_CONST false
+#3 FI
+#3 '}'
+#3 ';'
+#4 '}'
+#4 ';'

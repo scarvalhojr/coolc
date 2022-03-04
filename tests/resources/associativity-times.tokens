@@ -1,0 +1,40 @@
+#name "associativity-times.cool"
+#1 CLASS
+#1 TYPEID Hello
+#1 '{'
+#2 OBJECTID foo
+#2 ':'
+#2 TYPEID Int
+#2 ';'
+#4 OBJECTID moo2
+#4 '('
+#4 OBJECTID a
+#4 ':'
+#4 TYPEID String
+#4 ','
+#4 OBJECTID b
+#4 ':'
+#4 TYPEID Int
+#4 ','
+#4 OBJECTID c
+#4 ':'
+#4 TYPEID Int
+#4 ','
+#4 OBJECTID d
+#4 ':'
+#4 TYPEID Int
+#4 ')'
+#4 ':'
+#4 TYPEID Hello
+#4 '{'
+#5 OBJECTID a
+#5 '*'
+#5 OBJECTID b
+#5 '*'
+#5 OBJECTID c
+#5 '*'
+#5 OBJECTID d
+#6 '}'
+#6 ';'
+#8 '}'
+#8 ';'

@@ -1,0 +1,28 @@
+#name "whileoneexpression.cool"
+#1 CLASS
+#1 TYPEID Test
+#1 '{'
+#2 OBJECTID foo
+#2 ':'
+#2 TYPEID Test
+#2 ';'
+#3 OBJECTID bar
+#3 '('
+#3 ')'
+#3 ':'
+#3 TYPEID Int
+#3 '{'
+#3 WHILE
+#3 '('
+#3 NOT
+#3 BOOL_CONST false
+#3 ')'
+#3 LOOP
+#3 '('
+#3 STR_CONST "Ooga booga"
+#3 ')'
+#3 POOL
+#3 '}'
+#3 ';'
+#4 '}'
+#4 ';'

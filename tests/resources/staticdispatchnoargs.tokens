@@ -1,0 +1,25 @@
+#name "staticdispatchnoargs.cool"
+#1 CLASS
+#1 TYPEID Test
+#1 '{'
+#2 OBJECTID foo
+#2 ':'
+#2 TYPEID Int
+#2 ';'
+#3 OBJECTID bar
+#3 '('
+#3 ')'
+#3 ':'
+#3 TYPEID Object
+#3 '{'
+#3 OBJECTID self
+#3 '@'
+#3 TYPEID Test
+#3 '.'
+#3 OBJECTID bar
+#3 '('
+#3 ')'
+#3 '}'
+#3 ';'
+#4 '}'
+#4 ';'

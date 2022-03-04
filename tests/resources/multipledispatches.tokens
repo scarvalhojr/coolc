@@ -1,0 +1,54 @@
+#name "multipledispatches.cool"
+#1 CLASS
+#1 TYPEID A
+#1 '{'
+#2 OBJECTID f
+#2 '('
+#2 ')'
+#2 ':'
+#2 TYPEID Int
+#2 '{'
+#2 '{'
+#3 OBJECTID g
+#3 '('
+#3 ')'
+#3 ';'
+#4 OBJECTID h
+#4 '('
+#4 OBJECTID x
+#4 ')'
+#4 ';'
+#5 OBJECTID f
+#5 '('
+#5 INT_CONST 2
+#5 ','
+#5 INT_CONST 3
+#5 ')'
+#5 ';'
+#6 OBJECTID f
+#6 '('
+#6 INT_CONST 3
+#6 ','
+#6 INT_CONST 4
+#6 ','
+#6 INT_CONST 5
+#6 ')'
+#6 ';'
+#7 OBJECTID z
+#7 '('
+#7 INT_CONST 1
+#7 ','
+#7 INT_CONST 2
+#7 ','
+#7 INT_CONST 3
+#7 ','
+#7 INT_CONST 4
+#7 ','
+#7 INT_CONST 5
+#7 ')'
+#7 ';'
+#8 '}'
+#8 '}'
+#8 ';'
+#9 '}'
+#9 ';'

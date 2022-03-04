@@ -1,0 +1,33 @@
+#name "unaryassociativity.cool"
+#1 CLASS
+#1 TYPEID Foo
+#1 '{'
+#2 OBJECTID bar
+#2 '('
+#2 ')'
+#2 ':'
+#2 TYPEID Int
+#2 '{'
+#2 '{'
+#2 ISVOID
+#2 OBJECTID a
+#2 '+'
+#2 OBJECTID b
+#2 '*'
+#2 OBJECTID c
+#2 ';'
+#3 NOT
+#3 OBJECTID a
+#3 '<'
+#3 OBJECTID b
+#3 ';'
+#4 '~'
+#4 OBJECTID a
+#4 '+'
+#4 OBJECTID b
+#4 ';'
+#5 '}'
+#5 '}'
+#5 ';'
+#6 '}'
+#6 ';'

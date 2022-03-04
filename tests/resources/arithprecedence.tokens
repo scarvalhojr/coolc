@@ -1,0 +1,88 @@
+#name "arithprecedence.cool"
+#1 CLASS
+#1 TYPEID A
+#1 '{'
+#2 OBJECTID f
+#2 '('
+#2 ')'
+#2 ':'
+#2 TYPEID Int
+#2 '{'
+#2 '{'
+#3 OBJECTID a
+#3 '+'
+#3 OBJECTID b
+#3 '-'
+#3 OBJECTID c
+#3 ';'
+#4 OBJECTID a
+#4 '-'
+#4 OBJECTID b
+#4 '+'
+#4 OBJECTID c
+#4 ';'
+#6 OBJECTID a
+#6 '+'
+#6 OBJECTID b
+#6 '*'
+#6 OBJECTID c
+#6 ';'
+#7 OBJECTID a
+#7 '*'
+#7 OBJECTID b
+#7 '+'
+#7 OBJECTID c
+#7 ';'
+#9 OBJECTID a
+#9 '+'
+#9 OBJECTID b
+#9 '/'
+#9 OBJECTID c
+#9 ';'
+#10 OBJECTID a
+#10 '/'
+#10 OBJECTID b
+#10 '+'
+#10 OBJECTID c
+#10 ';'
+#12 OBJECTID a
+#12 '-'
+#12 OBJECTID b
+#12 '*'
+#12 OBJECTID c
+#12 ';'
+#13 OBJECTID a
+#13 '*'
+#13 OBJECTID b
+#13 '-'
+#13 OBJECTID c
+#13 ';'
+#15 OBJECTID a
+#15 '-'
+#15 OBJECTID b
+#15 '/'
+#15 OBJECTID c
+#15 ';'
+#16 OBJECTID a
+#16 '/'
+#16 OBJECTID b
+#16 '-'
+#16 OBJECTID c
+#16 ';'
+#18 OBJECTID a
+#18 '*'
+#18 OBJECTID b
+#18 '/'
+#18 OBJECTID c
+#18 ';'
+#19 OBJECTID a
+#19 '/'
+#19 OBJECTID b
+#19 '*'
+#19 OBJECTID c
+#19 ';'
+#20 '}'
+#20 '}'
+#20 ';'
+#21 '}'
+#21 ';'

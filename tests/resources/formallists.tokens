@@ -1,0 +1,67 @@
+#name "formallists.cool"
+#1 CLASS
+#1 TYPEID A
+#1 '{'
+#2 OBJECTID f
+#2 '('
+#2 ')'
+#2 ':'
+#2 TYPEID Int
+#2 '{'
+#3 INT_CONST 5
+#4 '}'
+#4 ';'
+#5 OBJECTID g
+#5 '('
+#5 OBJECTID x
+#5 ':'
+#5 TYPEID Bool
+#5 ')'
+#5 ':'
+#5 TYPEID IO
+#5 '{'
+#6 OBJECTID self
+#7 '}'
+#7 ';'
+#8 OBJECTID h
+#8 '('
+#8 OBJECTID y
+#8 ':'
+#8 TYPEID SELF_TYPE
+#8 ','
+#8 OBJECTID z
+#8 ':'
+#8 TYPEID Int
+#8 ')'
+#8 ':'
+#8 TYPEID SELF_TYPE
+#8 '{'
+#9 OBJECTID x
+#10 '}'
+#10 ';'
+#11 OBJECTID f
+#11 '('
+#11 OBJECTID a
+#11 ':'
+#11 TYPEID Int
+#11 ','
+#11 OBJECTID b
+#11 ':'
+#11 TYPEID Bool
+#11 ','
+#11 OBJECTID c
+#11 ':'
+#11 TYPEID Object
+#11 ')'
+#11 ':'
+#11 TYPEID Object
+#11 '{'
+#12 OBJECTID a
+#12 '+'
+#12 OBJECTID b
+#12 '+'
+#12 OBJECTID c
+#13 '}'
+#13 ';'
+#14 '}'
+#14 ';'

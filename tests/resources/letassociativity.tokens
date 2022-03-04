@@ -1,0 +1,25 @@
+#name "letassociativity.cool"
+#1 CLASS
+#1 TYPEID Goodbye
+#1 '{'
+#3 OBJECTID help
+#3 '('
+#3 OBJECTID a
+#3 ':'
+#3 TYPEID Int
+#3 ')'
+#3 ':'
+#3 TYPEID Int
+#3 '{'
+#4 LET
+#4 OBJECTID a
+#4 ':'
+#4 TYPEID Int
+#4 IN
+#5 INT_CONST 6
+#5 '+'
+#5 INT_CONST 7
+#6 '}'
+#6 ';'
+#8 '}'
+#8 ';'

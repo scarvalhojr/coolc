@@ -1,0 +1,27 @@
+#name "dispatchonearg.cool"
+#1 CLASS
+#1 TYPEID Test
+#1 '{'
+#2 OBJECTID foo
+#2 ':'
+#2 TYPEID Test
+#2 ';'
+#3 OBJECTID bar
+#3 '('
+#3 OBJECTID x
+#3 ':'
+#3 TYPEID Baz
+#3 ')'
+#3 ':'
+#3 TYPEID Object
+#3 '{'
+#3 OBJECTID foo
+#3 '.'
+#3 OBJECTID bar
+#3 '('
+#3 OBJECTID x
+#3 ')'
+#3 '}'
+#3 ';'
+#4 '}'
+#4 ';'

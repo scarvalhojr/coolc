@@ -1,0 +1,35 @@
+#name "multipleattributes.cool"
+#1 CLASS
+#1 TYPEID A
+#1 '{'
+#2 OBJECTID x
+#2 ':'
+#2 TYPEID Int
+#2 ';'
+#3 OBJECTID y
+#3 ':'
+#3 TYPEID Bool
+#3 ';'
+#4 OBJECTID z
+#4 ':'
+#4 TYPEID Object
+#4 ';'
+#5 OBJECTID f
+#5 '('
+#5 ')'
+#5 ':'
+#5 TYPEID Bool
+#5 '{'
+#6 BOOL_CONST true
+#7 '}'
+#7 ';'
+#8 OBJECTID a
+#8 ':'
+#8 TYPEID String
+#8 ';'
+#9 OBJECTID a
+#9 ':'
+#9 TYPEID IO
+#9 ';'
+#10 '}'
+#10 ';'

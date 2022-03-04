@@ -1,0 +1,51 @@
+#name "letparens.cool"
+#1 CLASS
+#1 TYPEID Foo
+#1 '{'
+#2 OBJECTID bar
+#2 '('
+#2 ')'
+#2 ':'
+#2 TYPEID Int
+#2 '{'
+#2 '{'
+#2 LET
+#2 OBJECTID a
+#2 ':'
+#2 TYPEID Int
+#2 IN
+#2 '('
+#2 OBJECTID a
+#2 '+'
+#2 OBJECTID b
+#2 ')'
+#2 ';'
+#3 '('
+#3 LET
+#3 OBJECTID a
+#3 ':'
+#3 TYPEID Int
+#3 IN
+#3 OBJECTID a
+#3 ')'
+#3 '+'
+#3 OBJECTID b
+#3 ';'
+#4 LET
+#4 OBJECTID a
+#4 ':'
+#4 TYPEID Int
+#4 IN
+#4 '('
+#4 OBJECTID a
+#4 ')'
+#4 '+'
+#4 '('
+#4 OBJECTID b
+#4 ')'
+#4 ';'
+#4 '}'
+#4 '}'
+#4 ';'
+#5 '}'
+#5 ';'

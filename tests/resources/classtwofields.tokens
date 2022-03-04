@@ -1,0 +1,14 @@
+#name "classtwofields.cool"
+#1 CLASS
+#1 TYPEID Hello
+#1 '{'
+#2 OBJECTID foo
+#2 ':'
+#2 TYPEID Int
+#2 ';'
+#3 OBJECTID bar
+#3 ':'
+#3 TYPEID String
+#3 ';'
+#4 '}'
+#4 ';'

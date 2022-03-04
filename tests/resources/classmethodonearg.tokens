@@ -1,0 +1,18 @@
+#name "classmethodonearg.cool"
+#1 CLASS
+#1 TYPEID Hello
+#1 '{'
+#3 OBJECTID cow
+#3 '('
+#3 OBJECTID a
+#3 ':'
+#3 TYPEID Int
+#3 ')'
+#3 ':'
+#3 TYPEID SELF_TYPE
+#3 '{'
+#4 OBJECTID self
+#5 '}'
+#5 ';'
+#7 '}'
+#7 ';'

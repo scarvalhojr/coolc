@@ -1,0 +1,44 @@
+#name "casemultiplebranch.cool"
+#1 CLASS
+#1 TYPEID Test
+#1 '{'
+#2 OBJECTID foo
+#2 ':'
+#2 TYPEID Test
+#2 ';'
+#3 OBJECTID bar
+#3 '('
+#3 ')'
+#3 ':'
+#3 TYPEID Int
+#3 '{'
+#3 CASE
+#3 OBJECTID foo
+#3 '.'
+#3 OBJECTID bar
+#3 '('
+#3 ')'
+#3 OF
+#3 OBJECTID y
+#3 ':'
+#3 TYPEID Int
+#3 DARROW
+#3 INT_CONST 3
+#3 ';'
+#4 OBJECTID z
+#4 ':'
+#4 TYPEID String
+#4 DARROW
+#4 INT_CONST 4
+#4 ';'
+#5 OBJECTID x
+#5 ':'
+#5 TYPEID Test
+#5 DARROW
+#5 INT_CONST 5
+#5 ';'
+#5 ESAC
+#5 '}'
+#5 ';'
+#6 '}'
+#6 ';'

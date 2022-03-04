@@ -1,0 +1,10 @@
+#name "classonefield.cool"
+#1 CLASS
+#1 TYPEID Hello
+#1 '{'
+#2 OBJECTID foo
+#2 ':'
+#2 TYPEID Int
+#2 ';'
+#3 '}'
+#3 ';'

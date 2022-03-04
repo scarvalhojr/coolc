@@ -1,0 +1,28 @@
+#name "comparisons-assoc.cool"
+#1 CLASS
+#1 TYPEID Test
+#1 '{'
+#2 OBJECTID foo
+#2 ':'
+#2 TYPEID Test
+#2 ';'
+#3 OBJECTID bar
+#3 '('
+#3 ')'
+#3 ':'
+#3 TYPEID Int
+#3 '{'
+#3 '{'
+#3 OBJECTID x
+#3 '='
+#3 '('
+#3 INT_CONST 3
+#3 '<'
+#3 INT_CONST 4
+#3 ')'
+#3 ';'
+#3 '}'
+#3 '}'
+#3 ';'
+#4 '}'
+#4 ';'

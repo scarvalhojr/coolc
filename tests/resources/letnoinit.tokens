@@ -1,0 +1,24 @@
+#name "letnoinit.cool"
+#1 CLASS
+#1 TYPEID Test
+#1 '{'
+#2 OBJECTID foo
+#2 ':'
+#2 TYPEID Test
+#2 ';'
+#3 OBJECTID baz
+#3 '('
+#3 ')'
+#3 ':'
+#3 TYPEID String
+#3 '{'
+#3 LET
+#3 OBJECTID x
+#3 ':'
+#3 TYPEID Int
+#3 IN
+#3 OBJECTID x
+#3 '}'
+#3 ';'
+#4 '}'
+#4 ';'

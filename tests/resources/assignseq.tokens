@@ -1,0 +1,33 @@
+#name "assignseq.cool"
+#1 CLASS
+#1 TYPEID Main
+#1 '{'
+#2 OBJECTID x
+#2 ':'
+#2 TYPEID Int
+#2 ';'
+#3 OBJECTID y
+#3 ':'
+#3 TYPEID Int
+#3 ';'
+#4 OBJECTID main
+#4 '('
+#4 ')'
+#4 ':'
+#4 TYPEID Object
+#4 '{'
+#4 '{'
+#4 OBJECTID x
+#4 ASSIGN
+#4 OBJECTID y
+#4 ASSIGN
+#4 '~'
+#4 '('
+#4 INT_CONST 5
+#4 ')'
+#4 ';'
+#4 '}'
+#4 '}'
+#4 ';'
+#5 '}'
+#5 ';'
