@@ -13,11 +13,8 @@ _program
       #2
       _dispatch
         #2
-        _block
-          #2
-          _new
-            A
-          : _no_type
+        _object
+          self
         : _no_type
         m
         (
@@ -30,8 +27,8 @@ _program
       #3
       _dispatch
         #3
-        _new
-          A
+        _object
+          self
         : _no_type
         m
         (
@@ -42,18 +39,12 @@ _program
       o3
       O
       #4
-      _dispatch
+      _static_dispatch
         #4
-        _plus
-          #4
-          _int
-            1
-          : _no_type
-          #4
-          _int
-            2
-          : _no_type
+        _object
+          self
         : _no_type
+        Object
         m
         (
         )
@@ -63,14 +54,77 @@ _program
       o4
       O
       #5
-      _dispatch
+      _static_dispatch
         #5
-        _block
+        _dispatch
           #5
+          _object
+            self
+          : _no_type
+          m
+          (
+          )
+        : _no_type
+        Object
+        n
+        (
+        )
+      : _no_type
+    #6
+    _attr
+      o5
+      O
+      #6
+      _dispatch
+        #6
+        _dispatch
+          #6
+          _object
+            x
+          : _no_type
+          m
+          (
+          )
+        : _no_type
+        n
+        (
+        )
+      : _no_type
+    #7
+    _attr
+      o6
+      O
+      #7
+      _static_dispatch
+        #7
+        _static_dispatch
+          #7
+          _object
+            x
+          : _no_type
+          Object
+          m
+          (
+          )
+        : _no_type
+        Object
+        n
+        (
+        )
+      : _no_type
+    #8
+    _attr
+      o7
+      O
+      #8
+      _dispatch
+        #8
+        _plus
+          #8
           _int
             1
           : _no_type
-          #5
+          #8
           _int
             2
           : _no_type
@@ -78,5 +132,354 @@ _program
         m
         (
         )
+      : _no_type
+    #9
+    _attr
+      o8
+      O
+      #9
+      _static_dispatch
+        #9
+        _plus
+          #9
+          _int
+            1
+          : _no_type
+          #9
+          _int
+            2
+          : _no_type
+        : _no_type
+        O
+        m
+        (
+        )
+      : _no_type
+    #10
+    _attr
+      o9
+      O
+      #10
+      _dispatch
+        #10
+        _block
+          #10
+          _int
+            1
+          : _no_type
+          #10
+          _int
+            2
+          : _no_type
+        : _no_type
+        m
+        (
+        )
+      : _no_type
+    #11
+    _attr
+      o10
+      O
+      #11
+      _static_dispatch
+        #11
+        _block
+          #11
+          _int
+            1
+          : _no_type
+          #11
+          _int
+            2
+          : _no_type
+        : _no_type
+        O
+        m
+        (
+        )
+      : _no_type
+    #12
+    _attr
+      o11
+      O
+      #12
+      _dispatch
+        #12
+        _block
+          #12
+          _new
+            A
+          : _no_type
+        : _no_type
+        m
+        (
+        )
+      : _no_type
+    #13
+    _attr
+      o12
+      O
+      #13
+      _static_dispatch
+        #13
+        _block
+          #13
+          _new
+            A
+          : _no_type
+        : _no_type
+        O
+        m
+        (
+        )
+      : _no_type
+    #14
+    _attr
+      o13
+      O
+      #14
+      _dispatch
+        #14
+        _new
+          A
+        : _no_type
+        m
+        (
+        )
+      : _no_type
+    #15
+    _attr
+      o14
+      O
+      #15
+      _static_dispatch
+        #15
+        _new
+          A
+        : _no_type
+        Object
+        m
+        (
+        )
+      : _no_type
+    #16
+    _attr
+      o15
+      O
+      #21
+      _dispatch
+        #17
+        _cond
+          #17
+          _bool
+            1
+          : _no_type
+          #18
+          _new
+            A
+          : _no_type
+          #20
+          _new
+            B
+          : _no_type
+        : _no_type
+        m
+        (
+        )
+      : _no_type
+    #22
+    _attr
+      o16
+      O
+      #27
+      _static_dispatch
+        #23
+        _cond
+          #23
+          _bool
+            1
+          : _no_type
+          #24
+          _new
+            A
+          : _no_type
+          #26
+          _new
+            B
+          : _no_type
+        : _no_type
+        O
+        m
+        (
+        )
+      : _no_type
+    #28
+    _attr
+      o17
+      O
+      #31
+      _dispatch
+        #29
+        _loop
+          #29
+          _isvoid
+            #29
+            _object
+              a
+            : _no_type
+          : _no_type
+          #30
+          _assign
+            a
+            #30
+            _new
+              A
+            : _no_type
+          : _no_type
+        : _no_type
+        m
+        (
+        )
+      : _no_type
+    #32
+    _attr
+      o18
+      O
+      #35
+      _static_dispatch
+        #33
+        _loop
+          #33
+          _isvoid
+            #33
+            _object
+              a
+            : _no_type
+          : _no_type
+          #34
+          _assign
+            a
+            #34
+            _new
+              A
+            : _no_type
+          : _no_type
+        : _no_type
+        O
+        m
+        (
+        )
+      : _no_type
+    #36
+    _attr
+      o19
+      O
+      #40
+      _dispatch
+        #37
+        _typcase
+          #37
+          _int
+            0
+          : _no_type
+          #38
+          _branch
+            i
+            Int
+            #38
+            _new
+              A
+            : _no_type
+          #39
+          _branch
+            x
+            Object
+            #39
+            _new
+              B
+            : _no_type
+        : _no_type
+        m
+        (
+        )
+      : _no_type
+    #41
+    _attr
+      o20
+      O
+      #45
+      _static_dispatch
+        #42
+        _typcase
+          #42
+          _int
+            0
+          : _no_type
+          #43
+          _branch
+            i
+            Int
+            #43
+            _new
+              A
+            : _no_type
+          #44
+          _branch
+            x
+            Object
+            #44
+            _new
+              B
+            : _no_type
+        : _no_type
+        O
+        m
+        (
+        )
+      : _no_type
+    #52
+    _attr
+      o21
+      O
+      #53
+      _let
+        a
+        A
+        #0
+        _no_expr
+        : _no_type
+        #54
+        _dispatch
+          #54
+          _new
+            A
+          : _no_type
+          m
+          (
+          )
+        : _no_type
+      : _no_type
+    #55
+    _attr
+      o22
+      O
+      #56
+      _let
+        a
+        A
+        #0
+        _no_expr
+        : _no_type
+        #57
+        _static_dispatch
+          #57
+          _new
+            A
+          : _no_type
+          O
+          m
+          (
+          )
+        : _no_type
       : _no_type
     )

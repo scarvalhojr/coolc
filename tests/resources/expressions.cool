@@ -103,4 +103,8 @@ class A {
             )
         );
     w: W <- self@Object.a()@A.b().c();
+    add_if: X <- if true then 0 else 1 fi + if false then 2 else 3 fi;
+    add_loop: X <- while false loop 1 pool + while false loop 2 pool;
+    add_case: X <- case x of a: A => 1; esac + case x of b: B => 2; esac;
+    add_let: X <- let a: A in 0 + 1 + let a: A in 2;
 };

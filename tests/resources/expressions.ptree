@@ -792,4 +792,145 @@ _program
         (
         )
       : _no_type
+    #106
+    _attr
+      add_if
+      X
+      #106
+      _plus
+        #106
+        _cond
+          #106
+          _bool
+            1
+          : _no_type
+          #106
+          _int
+            0
+          : _no_type
+          #106
+          _int
+            1
+          : _no_type
+        : _no_type
+        #106
+        _cond
+          #106
+          _bool
+            0
+          : _no_type
+          #106
+          _int
+            2
+          : _no_type
+          #106
+          _int
+            3
+          : _no_type
+        : _no_type
+      : _no_type
+    #107
+    _attr
+      add_loop
+      X
+      #107
+      _plus
+        #107
+        _loop
+          #107
+          _bool
+            0
+          : _no_type
+          #107
+          _int
+            1
+          : _no_type
+        : _no_type
+        #107
+        _loop
+          #107
+          _bool
+            0
+          : _no_type
+          #107
+          _int
+            2
+          : _no_type
+        : _no_type
+      : _no_type
+    #108
+    _attr
+      add_case
+      X
+      #108
+      _plus
+        #108
+        _typcase
+          #108
+          _object
+            x
+          : _no_type
+          #108
+          _branch
+            a
+            A
+            #108
+            _int
+              1
+            : _no_type
+        : _no_type
+        #108
+        _typcase
+          #108
+          _object
+            x
+          : _no_type
+          #108
+          _branch
+            b
+            B
+            #108
+            _int
+              2
+            : _no_type
+        : _no_type
+      : _no_type
+    #109
+    _attr
+      add_let
+      X
+      #109
+      _let
+        a
+        A
+        #0
+        _no_expr
+        : _no_type
+        #109
+        _plus
+          #109
+          _plus
+            #109
+            _int
+              0
+            : _no_type
+            #109
+            _int
+              1
+            : _no_type
+          : _no_type
+          #109
+          _let
+            a
+            A
+            #0
+            _no_expr
+            : _no_type
+            #109
+            _int
+              2
+            : _no_type
+          : _no_type
+        : _no_type
+      : _no_type
     )

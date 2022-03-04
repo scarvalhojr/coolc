@@ -113,28 +113,22 @@ fn formal(input: Tokens) -> IResult<Tokens, Formal> {
 //                         - term
 //                     - negative_oper
 //                         - term
-//                             - method_call
-//                                 - callee
-//                                     - callable
-//                                 - call
-//                                     - expression
-//                             - conditional_expression
-//                             - loop_expression
-//                             - case_expression
-//                             - let_expression
-//                             - callable
+//                     - term
+//                         - implicit_self_method_call
+//                         - method_call
+//                             - value
 //                                 - parens_expression
 //                                 - expression_block
+//                                 - conditional_expression
+//                                 - loop_expression
+//                                 - case_expression
+//                                 - let_expression
 //                                 - new_object
 //                                 - object
 //                                 - literal
 
 fn expression(input: Tokens) -> IResult<Tokens, Expression> {
-    alt((
-        assign,
-        bool_not_oper,
-        comparison_oper,
-    ))(input)
+    alt((assign, bool_not_oper, comparison_oper))(input)
 }
 
 fn assign(input: Tokens) -> IResult<Tokens, Expression> {
@@ -199,11 +193,7 @@ fn build_binary_expr<'a>(
 }
 
 fn operand(input: Tokens) -> IResult<Tokens, Expression> {
-    alt((
-        isvoid_oper,
-        negative_oper,
-        term,
-    ))(input)
+    alt((isvoid_oper, negative_oper, term))(input)
 }
 
 fn isvoid_oper(input: Tokens) -> IResult<Tokens, Expression> {
@@ -223,65 +213,66 @@ fn negative_oper(input: Tokens) -> IResult<Tokens, Expression> {
 }
 
 fn term(input: Tokens) -> IResult<Tokens, Expression> {
-    alt((
-        method_call,
-        conditional_expression,
-        loop_expression,
-        case_expression,
-        let_expression,
-        callable,
-    ))(input)
+    alt((implicit_self_method_call, method_call))(input)
+}
+
+type CallInfo<'a> = (Span<'a>, Option<TypeId>, Ident, Vec<Expression<'a>>);
+
+fn implicit_self_method_call(input: Tokens) -> IResult<Tokens, Expression> {
+    let (_, location) = current_location(input)?;
+    map(
+        pair(call, many0(chained_call)),
+        move |((id, params), chained)| {
+            let callee = Expression::new(
+                ExpressionData::Object("self".to_string()),
+                location,
+            );
+            let first_call_info = (location, None, id, params);
+            build_chained_calls(callee, first_call_info, chained)
+        },
+    )(input)
 }
 
 fn method_call(input: Tokens) -> IResult<Tokens, Expression> {
     map(
-        tuple((callee, call, many0(chained_call))),
-        move |((loc, expr, static_type), (id, params), chained)| {
-            let base = Expression::new(
-                ExpressionData::new_method_call(expr, static_type, id, params),
-                loc,
-            );
-            chained.into_iter().fold(
-                base,
-                |acc, (loc, static_type, id, params)| {
-                    Expression::new(
-                        ExpressionData::new_method_call(
-                            acc,
-                            static_type,
-                            id,
-                            params,
-                        ),
-                        loc,
-                    )
-                },
-            )
+        pair(
+            value,
+            opt(tuple((
+                opt(preceded(at_token, type_id)),
+                dot_token,
+                call,
+                many0(chained_call),
+            ))),
+        ),
+        move |(callee, calls)| match calls {
+            Some((static_type, dot, (id, params), chained)) => {
+                let first_call_info = (dot.location, static_type, id, params);
+                build_chained_calls(callee, first_call_info, chained)
+            }
+            None => callee,
         },
     )(input)
 }
 
-fn callee(
-    input: Tokens,
-) -> IResult<Tokens, (Span, Expression, Option<TypeId>)> {
-    let (_, location) = current_location(input)?;
-    map(
-        opt(tuple((callable, opt(preceded(at_token, type_id)), dot_token))),
-        move |callee| {
-            callee
-                .map(|(expr, static_type, token)| {
-                    (token.location, expr, static_type)
-                })
-                .unwrap_or_else(|| {
-                    (
-                        location,
-                        Expression::new(
-                            ExpressionData::Object("self".to_string()),
-                            location,
-                        ),
-                        None,
-                    )
-                })
+fn build_chained_calls<'a>(
+    callee: Expression<'a>,
+    first_call: CallInfo<'a>,
+    chained: Vec<CallInfo<'a>>,
+) -> Expression<'a> {
+    let (location, static_type, id, params) = first_call;
+    let base = Expression::new(
+        ExpressionData::new_method_call(callee, static_type, id, params),
+        location,
+    );
+    chained.into_iter().fold(
+        base,
+        |acc, (location, static_type, id, params)| {
+            Expression::new(
+                ExpressionData::new_method_call(acc, static_type, id, params),
+                location,
+            )
         },
-    )(input)
+    )
 }
 
 fn call(input: Tokens) -> IResult<Tokens, (Ident, Vec<Expression>)> {
@@ -295,13 +286,43 @@ fn call(input: Tokens) -> IResult<Tokens, (Ident, Vec<Expression>)> {
     )(input)
 }
 
-fn chained_call(
-    input: Tokens,
-) -> IResult<Tokens, (Span, Option<TypeId>, Ident, Vec<Expression>)> {
+fn chained_call(input: Tokens) -> IResult<Tokens, CallInfo> {
     map(
         tuple((opt(preceded(at_token, type_id)), dot_token, call)),
-        |(static_type, token, (ident, exprs))| {
-            (token.location, static_type, ident, exprs)
+        |(static_type, dot, (ident, exprs))| {
+            (dot.location, static_type, ident, exprs)
+        },
+    )(input)
+}
+
+fn value(input: Tokens) -> IResult<Tokens, Expression> {
+    alt((
+        parens_expression,
+        expression_block,
+        conditional_expression,
+        loop_expression,
+        case_expression,
+        let_expression,
+        new_object,
+        object,
+        literal,
+    ))(input)
+}
+
+fn parens_expression(input: Tokens) -> IResult<Tokens, Expression> {
+    delimited(open_parens_token, expression, close_parens_token)(input)
+}
+
+fn expression_block(input: Tokens) -> IResult<Tokens, Expression> {
+    let (_, location) = current_location(input)?;
+    map(
+        delimited(
+            open_braces_token,
+            many1(terminated(expression, semicolon_token)),
+            close_braces_token,
+        ),
+        move |expressions| {
+            Expression::new(ExpressionData::Block(expressions), location)
         },
     )(input)
 }
@@ -398,34 +419,6 @@ fn let_binding(
             opt(preceded(assign_token, expression)),
         )),
         move |(ident, type_id, opt_expr)| (ident, type_id, opt_expr, location),
-    )(input)
-}
-
-fn callable(input: Tokens) -> IResult<Tokens, Expression> {
-    alt((
-        parens_expression,
-        expression_block,
-        new_object,
-        object,
-        literal
-    ))(input)
-}
-
-fn parens_expression(input: Tokens) -> IResult<Tokens, Expression> {
-    delimited(open_parens_token, expression, close_parens_token)(input)
-}
-
-fn expression_block(input: Tokens) -> IResult<Tokens, Expression> {
-    let (_, location) = current_location(input)?;
-    map(
-        delimited(
-            open_braces_token,
-            many1(terminated(expression, semicolon_token)),
-            close_braces_token,
-        ),
-        move |expressions| {
-            Expression::new(ExpressionData::Block(expressions), location)
-        },
     )(input)
 }
 

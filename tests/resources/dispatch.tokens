@@ -6,12 +6,6 @@
 #2 ':'
 #2 TYPEID O
 #2 ASSIGN
-#2 '{'
-#2 NEW
-#2 TYPEID A
-#2 ';'
-#2 '}'
-#2 '.'
 #2 OBJECTID m
 #2 '('
 #2 ')'
@@ -20,8 +14,7 @@
 #3 ':'
 #3 TYPEID O
 #3 ASSIGN
-#3 NEW
-#3 TYPEID A
+#3 OBJECTID self
 #3 '.'
 #3 OBJECTID m
 #3 '('
@@ -31,11 +24,9 @@
 #4 ':'
 #4 TYPEID O
 #4 ASSIGN
-#4 '('
-#4 INT_CONST 1
-#4 '+'
-#4 INT_CONST 2
-#4 ')'
+#4 OBJECTID self
+#4 '@'
+#4 TYPEID Object
 #4 '.'
 #4 OBJECTID m
 #4 '('
@@ -45,16 +36,329 @@
 #5 ':'
 #5 TYPEID O
 #5 ASSIGN
-#5 '{'
-#5 INT_CONST 1
-#5 ';'
-#5 INT_CONST 2
-#5 ';'
-#5 '}'
-#5 '.'
 #5 OBJECTID m
 #5 '('
 #5 ')'
+#5 '@'
+#5 TYPEID Object
+#5 '.'
+#5 OBJECTID n
+#5 '('
+#5 ')'
 #5 ';'
-#6 '}'
+#6 OBJECTID o5
+#6 ':'
+#6 TYPEID O
+#6 ASSIGN
+#6 OBJECTID x
+#6 '.'
+#6 OBJECTID m
+#6 '('
+#6 ')'
+#6 '.'
+#6 OBJECTID n
+#6 '('
+#6 ')'
 #6 ';'
+#7 OBJECTID o6
+#7 ':'
+#7 TYPEID O
+#7 ASSIGN
+#7 OBJECTID x
+#7 '@'
+#7 TYPEID Object
+#7 '.'
+#7 OBJECTID m
+#7 '('
+#7 ')'
+#7 '@'
+#7 TYPEID Object
+#7 '.'
+#7 OBJECTID n
+#7 '('
+#7 ')'
+#7 ';'
+#8 OBJECTID o7
+#8 ':'
+#8 TYPEID O
+#8 ASSIGN
+#8 '('
+#8 INT_CONST 1
+#8 '+'
+#8 INT_CONST 2
+#8 ')'
+#8 '.'
+#8 OBJECTID m
+#8 '('
+#8 ')'
+#8 ';'
+#9 OBJECTID o8
+#9 ':'
+#9 TYPEID O
+#9 ASSIGN
+#9 '('
+#9 INT_CONST 1
+#9 '+'
+#9 INT_CONST 2
+#9 ')'
+#9 '@'
+#9 TYPEID O
+#9 '.'
+#9 OBJECTID m
+#9 '('
+#9 ')'
+#9 ';'
+#10 OBJECTID o9
+#10 ':'
+#10 TYPEID O
+#10 ASSIGN
+#10 '{'
+#10 INT_CONST 1
+#10 ';'
+#10 INT_CONST 2
+#10 ';'
+#10 '}'
+#10 '.'
+#10 OBJECTID m
+#10 '('
+#10 ')'
+#10 ';'
+#11 OBJECTID o10
+#11 ':'
+#11 TYPEID O
+#11 ASSIGN
+#11 '{'
+#11 INT_CONST 1
+#11 ';'
+#11 INT_CONST 2
+#11 ';'
+#11 '}'
+#11 '@'
+#11 TYPEID O
+#11 '.'
+#11 OBJECTID m
+#11 '('
+#11 ')'
+#11 ';'
+#12 OBJECTID o11
+#12 ':'
+#12 TYPEID O
+#12 ASSIGN
+#12 '{'
+#12 NEW
+#12 TYPEID A
+#12 ';'
+#12 '}'
+#12 '.'
+#12 OBJECTID m
+#12 '('
+#12 ')'
+#12 ';'
+#13 OBJECTID o12
+#13 ':'
+#13 TYPEID O
+#13 ASSIGN
+#13 '{'
+#13 NEW
+#13 TYPEID A
+#13 ';'
+#13 '}'
+#13 '@'
+#13 TYPEID O
+#13 '.'
+#13 OBJECTID m
+#13 '('
+#13 ')'
+#13 ';'
+#14 OBJECTID o13
+#14 ':'
+#14 TYPEID O
+#14 ASSIGN
+#14 NEW
+#14 TYPEID A
+#14 '.'
+#14 OBJECTID m
+#14 '('
+#14 ')'
+#14 ';'
+#15 OBJECTID o14
+#15 ':'
+#15 TYPEID O
+#15 ASSIGN
+#15 NEW
+#15 TYPEID A
+#15 '@'
+#15 TYPEID Object
+#15 '.'
+#15 OBJECTID m
+#15 '('
+#15 ')'
+#15 ';'
+#16 OBJECTID o15
+#16 ':'
+#16 TYPEID O
+#16 ASSIGN
+#17 IF
+#17 BOOL_CONST true
+#17 THEN
+#18 NEW
+#18 TYPEID A
+#19 ELSE
+#20 NEW
+#20 TYPEID B
+#21 FI
+#21 '.'
+#21 OBJECTID m
+#21 '('
+#21 ')'
+#21 ';'
+#22 OBJECTID o16
+#22 ':'
+#22 TYPEID O
+#22 ASSIGN
+#23 IF
+#23 BOOL_CONST true
+#23 THEN
+#24 NEW
+#24 TYPEID A
+#25 ELSE
+#26 NEW
+#26 TYPEID B
+#27 FI
+#27 '@'
+#27 TYPEID O
+#27 '.'
+#27 OBJECTID m
+#27 '('
+#27 ')'
+#27 ';'
+#28 OBJECTID o17
+#28 ':'
+#28 TYPEID O
+#28 ASSIGN
+#29 WHILE
+#29 ISVOID
+#29 OBJECTID a
+#29 LOOP
+#30 OBJECTID a
+#30 ASSIGN
+#30 NEW
+#30 TYPEID A
+#31 POOL
+#31 '.'
+#31 OBJECTID m
+#31 '('
+#31 ')'
+#31 ';'
+#32 OBJECTID o18
+#32 ':'
+#32 TYPEID O
+#32 ASSIGN
+#33 WHILE
+#33 ISVOID
+#33 OBJECTID a
+#33 LOOP
+#34 OBJECTID a
+#34 ASSIGN
+#34 NEW
+#34 TYPEID A
+#35 POOL
+#35 '@'
+#35 TYPEID O
+#35 '.'
+#35 OBJECTID m
+#35 '('
+#35 ')'
+#35 ';'
+#36 OBJECTID o19
+#36 ':'
+#36 TYPEID O
+#36 ASSIGN
+#37 CASE
+#37 INT_CONST 0
+#37 OF
+#38 OBJECTID i
+#38 ':'
+#38 TYPEID Int
+#38 DARROW
+#38 NEW
+#38 TYPEID A
+#38 ';'
+#39 OBJECTID x
+#39 ':'
+#39 TYPEID Object
+#39 DARROW
+#39 NEW
+#39 TYPEID B
+#39 ';'
+#40 ESAC
+#40 '.'
+#40 OBJECTID m
+#40 '('
+#40 ')'
+#40 ';'
+#41 OBJECTID o20
+#41 ':'
+#41 TYPEID O
+#41 ASSIGN
+#42 CASE
+#42 INT_CONST 0
+#42 OF
+#43 OBJECTID i
+#43 ':'
+#43 TYPEID Int
+#43 DARROW
+#43 NEW
+#43 TYPEID A
+#43 ';'
+#44 OBJECTID x
+#44 ':'
+#44 TYPEID Object
+#44 DARROW
+#44 NEW
+#44 TYPEID B
+#44 ';'
+#45 ESAC
+#45 '@'
+#45 TYPEID O
+#45 '.'
+#45 OBJECTID m
+#45 '('
+#45 ')'
+#45 ';'
+#52 OBJECTID o21
+#52 ':'
+#52 TYPEID O
+#52 ASSIGN
+#53 LET
+#53 OBJECTID a
+#53 ':'
+#53 TYPEID A
+#53 IN
+#54 NEW
+#54 TYPEID A
+#54 '.'
+#54 OBJECTID m
+#54 '('
+#54 ')'
+#54 ';'
+#55 OBJECTID o22
+#55 ':'
+#55 TYPEID O
+#55 ASSIGN
+#56 LET
+#56 OBJECTID a
+#56 ':'
+#56 TYPEID A
+#56 IN
+#57 NEW
+#57 TYPEID A
+#57 '@'
+#57 TYPEID O
+#57 '.'
+#57 OBJECTID m
+#57 '('
+#57 ')'
+#57 ';'
+#58 '}'
+#58 ';'

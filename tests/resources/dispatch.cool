@@ -1,6 +1,58 @@
 class A {
-    o1: O <- { new A; }.m();
-    o2: O <- new A.m();
-    o3: O <- (1 + 2) . m();
-    o4: O <- { 1; 2; } . m();
+    o1: O <- m();
+    o2: O <- self.m();
+    o3: O <- self@Object.m();
+    o4: O <- m()@Object.n();
+    o5: O <- x.m().n();
+    o6: O <- x@Object.m()@Object.n();
+    o7: O <- (1 + 2) . m();
+    o8: O <- (1 + 2) @ O . m();
+    o9: O <- { 1; 2; } . m();
+    o10: O <- { 1; 2; } @ O . m();
+    o11: O <- { new A; }.m();
+    o12: O <- { new A; } @ O .m();
+    o13: O <- new A.m();
+    o14: O <- new A @ Object . m();
+    o15: O <-
+        if true then
+            new A
+        else
+            new B
+        fi . m();
+    o16: O <-
+        if true then
+            new A
+        else
+            new B
+        fi @ O . m();
+    o17: O <-
+        while isvoid a loop
+            a <- new A
+        pool . m();
+    o18: O <-
+        while isvoid a loop
+            a <- new A
+        pool @ O . m();
+    o19: O <-
+        case 0 of
+            i: Int => new A;
+            x: Object => new B;
+        esac . m();
+    o20: O <-
+        case 0 of
+            i: Int => new A;
+            x: Object => new B;
+        esac @ O . m();
+
+-- Let expressions are ambiguous as they do not have a terminating token
+-- (unlike if/fi, case/esac, etc). The ambiguity is resolved by extending the
+-- expression to the right as far as possible. As a result, in the examples
+-- below the method call binds to "new A" in the rather than the result of the
+-- let expression.
+    o21: O <-
+        let a: A in
+            new A . m();
+    o22: O <-
+        let a: A in
+            new A @ O . m();
 };
